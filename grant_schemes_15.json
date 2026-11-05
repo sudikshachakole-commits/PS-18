@@ -1,0 +1,259 @@
+[
+    {
+        "grant_id": "GR001",
+        "grant_name": "Startup India Seed Fund Scheme (SISFS)",
+        "offering_body": "DPIIT",
+        "max_funding_amount_inr": 5000000,
+        "eligible_stages": [
+            "Pre-seed",
+            "Seed",
+            "Early Traction"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of DPIIT. Application must submit milestones.",
+        "application_deadline": "2027-05-27"
+    },
+    {
+        "grant_id": "GR002",
+        "grant_name": "MeitY TIDE 2.0 Grant",
+        "offering_body": "MeitY",
+        "max_funding_amount_inr": 700000,
+        "eligible_stages": [
+            "Pre-seed",
+            "Seed"
+        ],
+        "eligible_sectors": [
+            "DeepTech/AI",
+            "FinTech",
+            "EdTech",
+            "HealthTech",
+            "SaaS"
+        ],
+        "min_dpiit_recognized": "Any",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of MeitY. Application must submit milestones.",
+        "application_deadline": "2027-04-08"
+    },
+    {
+        "grant_id": "GR003",
+        "grant_name": "BIRAC BIG Scheme",
+        "offering_body": "BIRAC",
+        "max_funding_amount_inr": 5000000,
+        "eligible_stages": [
+            "Seed",
+            "Early Traction"
+        ],
+        "eligible_sectors": [
+            "BioTech",
+            "HealthTech",
+            "AgriTech"
+        ],
+        "min_dpiit_recognized": "Any",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of BIRAC. Application must submit milestones.",
+        "application_deadline": "2027-01-22"
+    },
+    {
+        "grant_id": "GR004",
+        "grant_name": "NIDHI PRAYAS Program",
+        "offering_body": "DST",
+        "max_funding_amount_inr": 1000000,
+        "eligible_stages": [
+            "Pre-seed",
+            "Prototype Development"
+        ],
+        "eligible_sectors": [
+            "DeepTech/AI",
+            "CleanTech",
+            "AgriTech"
+        ],
+        "min_dpiit_recognized": "Any",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of DST. Application must submit milestones.",
+        "application_deadline": "2027-04-13"
+    },
+    {
+        "grant_id": "GR005",
+        "grant_name": "MeitY SAMRIDH Accelerator",
+        "offering_body": "MeitY",
+        "max_funding_amount_inr": 4000000,
+        "eligible_stages": [
+            "Early Traction",
+            "Series A"
+        ],
+        "eligible_sectors": [
+            "SaaS",
+            "DeepTech/AI",
+            "FinTech"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of MeitY. Application must submit milestones.",
+        "application_deadline": "2027-06-09"
+    },
+    {
+        "grant_id": "GR006",
+        "grant_name": "Maharashtra State Innovation Society Grant",
+        "offering_body": "MSInS",
+        "max_funding_amount_inr": 1500000,
+        "eligible_stages": [
+            "Seed",
+            "Early Traction"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of MSInS. Application must submit milestones.",
+        "application_deadline": "2027-02-25"
+    },
+    {
+        "grant_id": "GR007",
+        "grant_name": "AIC Academic Incubation Seed Support",
+        "offering_body": "AIM",
+        "max_funding_amount_inr": 2500000,
+        "eligible_stages": [
+            "Pre-seed",
+            "Seed"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Any",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of AIM. Application must submit milestones.",
+        "application_deadline": "2027-05-12"
+    },
+    {
+        "grant_id": "GR008",
+        "grant_name": "DST-SEED Technology Development",
+        "offering_body": "DST",
+        "max_funding_amount_inr": 3000000,
+        "eligible_stages": [
+            "Early Traction",
+            "Series A"
+        ],
+        "eligible_sectors": [
+            "AgriTech",
+            "CleanTech",
+            "BioTech"
+        ],
+        "min_dpiit_recognized": "Any",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of DST. Application must submit milestones.",
+        "application_deadline": "2027-11-17"
+    },
+    {
+        "grant_id": "GR009",
+        "grant_name": "National Bio Entrepreneurship Competition (NBEC)",
+        "offering_body": "BREC",
+        "max_funding_amount_inr": 2000000,
+        "eligible_stages": [
+            "Seed",
+            "Bootstrapped"
+        ],
+        "eligible_sectors": [
+            "BioTech",
+            "HealthTech",
+            "AgriTech"
+        ],
+        "min_dpiit_recognized": "Any",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of BREC. Application must submit milestones.",
+        "application_deadline": "2027-07-22"
+    },
+    {
+        "grant_id": "GR010",
+        "grant_name": "GeM StartUp Runway Program",
+        "offering_body": "Ministry of Commerce",
+        "max_funding_amount_inr": 0,
+        "eligible_stages": [
+            "Early Traction",
+            "Series A"
+        ],
+        "eligible_sectors": [
+            "Logistics",
+            "SaaS",
+            "E-Commerce"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Requires verifiable innovation matching thematic domain goals of Ministry of Commerce. Application must submit milestones.",
+        "application_deadline": "2027-09-11"
+    },
+    {
+        "grant_id": "GR011",
+        "grant_name": "Regional State Tier-2 Innovation Hub Grant Type 11",
+        "offering_body": "State Electronics Mission",
+        "max_funding_amount_inr": 1200000,
+        "eligible_stages": [
+            "Seed",
+            "Bootstrapped"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Operations must be headquartered inside state technology parks.",
+        "application_deadline": "Open Year-Round"
+    },
+    {
+        "grant_id": "GR012",
+        "grant_name": "Regional State Tier-2 Innovation Hub Grant Type 12",
+        "offering_body": "State Electronics Mission",
+        "max_funding_amount_inr": 1200000,
+        "eligible_stages": [
+            "Seed",
+            "Bootstrapped"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Operations must be headquartered inside state technology parks.",
+        "application_deadline": "Open Year-Round"
+    },
+    {
+        "grant_id": "GR013",
+        "grant_name": "Regional State Tier-2 Innovation Hub Grant Type 13",
+        "offering_body": "State Electronics Mission",
+        "max_funding_amount_inr": 1200000,
+        "eligible_stages": [
+            "Seed",
+            "Bootstrapped"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Operations must be headquartered inside state technology parks.",
+        "application_deadline": "Open Year-Round"
+    },
+    {
+        "grant_id": "GR014",
+        "grant_name": "Regional State Tier-2 Innovation Hub Grant Type 14",
+        "offering_body": "State Electronics Mission",
+        "max_funding_amount_inr": 1200000,
+        "eligible_stages": [
+            "Seed",
+            "Bootstrapped"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Operations must be headquartered inside state technology parks.",
+        "application_deadline": "Open Year-Round"
+    },
+    {
+        "grant_id": "GR015",
+        "grant_name": "Regional State Tier-2 Innovation Hub Grant Type 15",
+        "offering_body": "State Electronics Mission",
+        "max_funding_amount_inr": 1200000,
+        "eligible_stages": [
+            "Seed",
+            "Bootstrapped"
+        ],
+        "eligible_sectors": [
+            "Any"
+        ],
+        "min_dpiit_recognized": "Yes",
+        "key_requirements": "Operations must be headquartered inside state technology parks.",
+        "application_deadline": "Open Year-Round"
+    }
+]

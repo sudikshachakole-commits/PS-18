@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Grant & Funding Finder — PS-18</title>
+  <style>
+    /* ── Reset & Base ────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ibm-blue: #0f62fe;
+      --ibm-blue-hover: #0353e9;
+      --ibm-gray-10: #f4f4f4;
+      --ibm-gray-20: #e0e0e0;
+      --ibm-gray-70: #525252;
+      --ibm-gray-90: #262626;
+      --ibm-teal: #009d9a;
+      --ibm-purple: #8a3ffc;
+      --ibm-green: #24a148;
+      --ibm-red: #da1e28;
+      --ibm-yellow: #f1c21b;
+      --surface: #ffffff;
+      --sidebar-bg: #161616;
+      --radius: 4px;
+      --shadow: 0 2px 8px rgba(0,0,0,.12);
+    }
+    body {
+      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      font-size: 14px;
+      color: var(--ibm-gray-90);
+      background: var(--ibm-gray-10);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    a { color: var(--ibm-blue); text-decoration: none; }
+    button { cursor: pointer; border: none; border-radius: var(--radius); }
+
+    /* ── Top Bar ─────────────────────────────────────────────────────────── */
+    .topbar {
+      background: var(--sidebar-bg);
+      color: #fff;
+      padding: 0 24px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-logo { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
+    .topbar-logo span { color: var(--ibm-blue); }
+    .topbar-sub { color: #a8a8a8; font-size: 12px; border-left: 1px solid #393939; padding-left: 12px; }
+    .topbar-badge {
+      margin-left: auto;
+      background: var(--ibm-blue);
+      color: #fff;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    /* ── Layout ──────────────────────────────────────────────────────────── */
+    .layout { display: flex; flex: 1; }
+    .sidebar {
+      width: 220px;
+      min-height: calc(100vh - 48px);
+      background: var(--sidebar-bg);
+      color: #c6c6c6;
+      padding-top: 16px;
+      flex-shrink: 0;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 13px;
+      border-left: 3px solid transparent;
+      transition: background .15s, border-color .15s;
+    }
+    .nav-item:hover { background: #282828; }
+    .nav-item.active { background: #393939; border-left-color: var(--ibm-blue); color: #fff; }
+    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    .main { flex: 1; padding: 24px; overflow-y: auto; }
+
+    /* ── Cards ───────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--ibm-gray-20);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: var(--ibm-gray-90);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── Stats Row ───────────────────────────────────────────────────────── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--ibm-gray-20);
+      border-radius: var(--radius);
+      padding: 16px;
+      border-top: 3px solid var(--ibm-blue);
+    }
+    .stat-card.teal { border-top-color: var(--ibm-teal); }
+    .stat-card.purple { border-top-color: var(--ibm-purple); }
+    .stat-card.green { border-top-color: var(--ibm-green); }
+    .stat-value { font-size: 26px; font-weight: 700; color: var(--ibm-gray-90); }
+    .stat-label { font-size: 11px; color: var(--ibm-gray-70); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+
+    /* ── Form Controls ───────────────────────────────────────────────────── */
+    .form-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
+    label { font-size: 11px; font-weight: 600; color: var(--ibm-gray-70); text-transform: uppercase; letter-spacing: .4px; }
+    select, input[type="text"], input[type="number"], textarea {
+      padding: 8px 10px;
+      border: 1px solid var(--ibm-gray-20);
+      border-radius: var(--radius);
+      font-size: 13px;
+      background: #fff;
+      color: var(--ibm-gray-90);
+      outline: none;
+      transition: border-color .15s;
+    }
+    select:focus, input:focus, textarea:focus { border-color: var(--ibm-blue); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    /* ── Buttons ─────────────────────────────────────────────────────────── */
+    .btn {
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius);
+      transition: background .15s;
+    }
+    .btn-primary { background: var(--ibm-blue); color: #fff; }
+    .btn-primary:hover { background: var(--ibm-blue-hover); }
+    .btn-secondary { background: var(--ibm-gray-20); color: var(--ibm-gray-90); }
+    .btn-secondary:hover { background: #c6c6c6; }
+    .btn-teal { background: var(--ibm-teal); color: #fff; }
+    .btn-teal:hover { background: #007d79; }
+    .btn-purple { background: var(--ibm-purple); color: #fff; }
+    .btn-purple:hover { background: #6929c4; }
+    .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+    /* ── Match Result Cards ──────────────────────────────────────────────── */
+    .match-list { display: flex; flex-direction: column; gap: 12px; }
+    .match-card {
+      border: 1px solid var(--ibm-gray-20);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .match-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+    .match-name { font-weight: 700; font-size: 14px; color: var(--ibm-gray-90); }
+    .match-body { font-size: 12px; color: var(--ibm-gray-70); }
+    .score-badge {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+    .score-high { background: #defbe6; color: #0e6027; }
+    .score-med { background: #ffd6e8; color: #740937; }
+    .score-low { background: #fff3cd; color: #7d5600; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--ibm-gray-10);
+      color: var(--ibm-gray-70);
+      border: 1px solid var(--ibm-gray-20);
+    }
+    .tag.blue { background: #edf5ff; color: #0043ce; border-color: #97c1ff; }
+    .tag.teal { background: #d9fbfb; color: #005d5d; border-color: #9ef0f0; }
+    .funding-amount { font-size: 13px; font-weight: 700; color: var(--ibm-teal); }
+    .deadline-text { font-size: 12px; color: var(--ibm-gray-70); }
+    .match-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+    .score-bar-wrap { display: flex; flex-direction: column; gap: 3px; }
+    .score-bar-label { font-size: 11px; color: var(--ibm-gray-70); display: flex; justify-content: space-between; }
+    .score-bar-bg { height: 4px; background: var(--ibm-gray-20); border-radius: 2px; overflow: hidden; }
+    .score-bar-fill { height: 100%; background: var(--ibm-blue); border-radius: 2px; transition: width .4s; }
+    .score-bar-fill.teal { background: var(--ibm-teal); }
+    .score-bar-fill.purple { background: var(--ibm-purple); }
+    .score-bar-fill.green { background: var(--ibm-green); }
+    .score-bar-fill.yellow { background: var(--ibm-yellow); }
+
+    /* ── Startup Grid ────────────────────────────────────────────────────── */
+    .startup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .startup-card {
+      border: 1px solid var(--ibm-gray-20);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fff;
+      cursor: pointer;
+      transition: box-shadow .15s, border-color .15s;
+    }
+    .startup-card:hover { box-shadow: 0 4px 16px rgba(15,98,254,.15); border-color: var(--ibm-blue); }
+    .startup-card-name { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+    .startup-card-meta { font-size: 11px; color: var(--ibm-gray-70); display: flex; flex-wrap: wrap; gap: 4px; }
+
+    /* ── Grant Grid ──────────────────────────────────────────────────────── */
+    .grant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .grant-card {
+      border: 1px solid var(--ibm-gray-20);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fff;
+      border-top: 3px solid var(--ibm-blue);
+    }
+    .grant-card-name { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+    .grant-card-body { font-size: 12px; color: var(--ibm-gray-70); font-style: italic; margin-bottom: 8px; }
+    .grant-card-meta { font-size: 11px; color: var(--ibm-gray-70); }
+
+    /* ── AI Output Box ───────────────────────────────────────────────────── */
+    .ai-output {
+      background: #f4f4f4;
+      border: 1px solid var(--ibm-gray-20);
+      border-left: 4px solid var(--ibm-blue);
+      border-radius: var(--radius);
+      padding: 16px;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      min-height: 80px;
+      color: var(--ibm-gray-90);
+    }
+    .ai-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ibm-blue);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--ibm-gray-20);
+      border-top-color: var(--ibm-blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Alert ───────────────────────────────────────────────────────────── */
+    .alert {
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .alert-info { background: #edf5ff; border: 1px solid #97c1ff; color: #0043ce; }
+    .alert-error { background: #fff1f1; border: 1px solid #ffa4a9; color: #da1e28; }
+    .alert-success { background: #defbe6; border: 1px solid #6fdc8c; color: #0e6027; }
+
+    /* ── Tables ──────────────────────────────────────────────────────────── */
+    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .data-table th {
+      background: var(--ibm-gray-10);
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ibm-gray-70);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      border-bottom: 2px solid var(--ibm-gray-20);
+    }
+    .data-table td { padding: 8px 10px; border-bottom: 1px solid var(--ibm-gray-10); vertical-align: middle; }
+    .data-table tr:hover td { background: #f9f9f9; }
+
+    /* ── Page sections ───────────────────────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--ibm-gray-90); }
+    .page-subtitle { font-size: 13px; color: var(--ibm-gray-70); margin-bottom: 20px; }
+
+    /* ── Search bar ──────────────────────────────────────────────────────── */
+    .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .search-row input { flex: 1; }
+
+    /* ── Responsive ──────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ── IBM Footer ──────────────────────────────────────────────────────── */
+    .ibm-granite-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #161616;
+      color: #a8a8a8;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    .ibm-granite-badge span { color: var(--ibm-blue); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- ── Top Bar ──────────────────────────────────────────────────────────── -->
+<div class="topbar">
+  <div class="topbar-logo">🔬 Grant<span>Finder</span></div>
+  <div class="topbar-sub">AI-Powered Grant & Funding Finder for Startups</div>
+  <div class="topbar-badge">Powered by IBM Granite</div>
+</div>
+
+<!-- ── Layout ───────────────────────────────────────────────────────────── -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="nav-icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('match')">
+      <span class="nav-icon">🔍</span> Find Grants
+    </div>
+    <div class="nav-item" onclick="showPage('startups')">
+      <span class="nav-icon">🚀</span> Startups
+    </div>
+    <div class="nav-item" onclick="showPage('grants')">
+      <span class="nav-icon">💰</span> Grant Catalogue
+    </div>
+    <div class="nav-item" onclick="showPage('proposal')">
+      <span class="nav-icon">✍️</span> AI Proposal
+    </div>
+    <div class="nav-item" onclick="showPage('eligibility')">
+      <span class="nav-icon">✅</span> Eligibility Check
+    </div>
+    <div class="nav-item" onclick="showPage('about')">
+      <span class="nav-icon">ℹ️</span> About
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── DASHBOARD ────────────────────────────────────────────────────── -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-title">Dashboard</div>
+      <div class="page-subtitle">Live snapshot of the Grant & Startup ecosystem</div>
+
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="stat-value" id="stat-grants">—</div><div class="stat-label">Grant Schemes</div></div>
+        <div class="stat-card teal"><div class="stat-value" id="stat-startups">—</div><div class="stat-label">Startup Profiles</div></div>
+        <div class="stat-card purple"><div class="stat-value" id="stat-funding">—</div><div class="stat-label">Max Funding Pool (₹ Cr)</div></div>
+        <div class="stat-card green"><div class="stat-value" id="stat-bodies">—</div><div class="stat-label">Offering Bodies</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="card-title">🏢 Sectors Covered by Grants</div>
+          <div id="dash-sectors" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 Startups by Sector (Top 8)</div>
+          <div id="dash-sector-bars"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:0;">
+        <div class="card-title">⚡ Quick Match — Try a startup</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Startup ID</label>
+            <input type="text" id="quick-sid" placeholder="e.g. ST014" style="max-width:150px;" />
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="quickMatch()">🔍 Find Grants</button>
+          </div>
+        </div>
+        <div id="quick-result"></div>
+      </div>
+    </div>
+
+    <!-- ── FIND GRANTS ───────────────────────────────────────────────────── -->
+    <div id="page-match" class="page">
+      <div class="page-title">Find Grants</div>
+      <div class="page-subtitle">Match your startup against the grant catalogue using AI-powered scoring</div>
+
+      <div class="card">
+        <div class="card-title">🔍 Search Parameters</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Startup ID <small style="font-weight:400;text-transform:none;color:#888;">(from dataset)</small></label>
+            <input type="text" id="m-sid" placeholder="e.g. ST001" />
+          </div>
+          <div style="display:flex;align-items:center;padding-bottom:2px;color:#888;font-size:12px;">— OR fill manually —</div>
+          <div class="form-group">
+            <label>Sector</label>
+            <select id="m-sector">
+              <option value="">Select sector</option>
+              <option>AgriTech</option><option>BioTech</option><option>CleanTech</option>
+              <option>DeepTech/AI</option><option>E-Commerce</option><option>EdTech</option>
+              <option>FinTech</option><option>HealthTech</option><option>Logistics</option><option>SaaS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Stage</label>
+            <select id="m-stage">
+              <option value="">Select stage</option>
+              <option>Pre-seed</option><option>Seed</option><option>Bootstrapped</option>
+              <option>Early Traction</option><option>Series A</option><option>Prototype Development</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>DPIIT Recognised</label>
+            <select id="m-dpiit">
+              <option value="">Select</option>
+              <option>Yes</option><option>No</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="max-width:160px;">
+            <label>Min Score (0–1)</label>
+            <input type="number" id="m-minscore" value="0.3" min="0" max="1" step="0.05" />
+          </div>
+          <div class="form-group" style="max-width:140px;">
+            <label>Max Results</label>
+            <input type="number" id="m-maxresults" value="10" min="1" max="15" />
+          </div>
+          <div style="padding-bottom:2px;">
+            <button class="btn btn-primary" onclick="doMatch()">🔍 Match Grants</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="match-results"></div>
+    </div>
+
+    <!-- ── STARTUPS ──────────────────────────────────────────────────────── -->
+    <div id="page-startups" class="page">
+      <div class="page-title">Startup Profiles</div>
+      <div class="page-subtitle">80 startups across sectors, stages, and cities</div>
+
+      <div class="card" style="padding:14px;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Filter Sector</label>
+            <select id="f-sector" onchange="filterStartups()">
+              <option value="">All Sectors</option>
+              <option>AgriTech</option><option>BioTech</option><option>CleanTech</option>
+              <option>DeepTech/AI</option><option>E-Commerce</option><option>EdTech</option>
+              <option>FinTech</option><option>HealthTech</option><option>Logistics</option><option>SaaS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Filter Stage</label>
+            <select id="f-stage" onchange="filterStartups()">
+              <option value="">All Stages</option>
+              <option>Pre-seed</option><option>Seed</option><option>Bootstrapped</option>
+              <option>Early Traction</option><option>Series A</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Filter DPIIT</label>
+            <select id="f-dpiit" onchange="filterStartups()">
+              <option value="">All</option><option>Yes</option><option>No</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Search Name / ID</label>
+            <input type="text" id="f-search" placeholder="Type to search…" oninput="filterStartups()" />
+          </div>
+        </div>
+      </div>
+
+      <div id="startup-count" style="font-size:12px;color:#888;margin-bottom:10px;"></div>
+      <div class="startup-grid" id="startup-grid"></div>
+    </div>
+
+    <!-- ── GRANT CATALOGUE ───────────────────────────────────────────────── -->
+    <div id="page-grants" class="page">
+      <div class="page-title">Grant Catalogue</div>
+      <div class="page-subtitle">15 active government grant schemes</div>
+      <div class="grant-grid" id="grant-grid"></div>
+    </div>
+
+    <!-- ── AI PROPOSAL ───────────────────────────────────────────────────── -->
+    <div id="page-proposal" class="page">
+      <div class="page-title">✍️ AI Proposal Generator</div>
+      <div class="page-subtitle">Generate a tailored grant application draft using IBM Granite</div>
+
+      <div class="card">
+        <div class="ibm-granite-badge" style="margin-bottom:14px;">
+          🤖 <span>IBM Granite</span> · ibm/granite-13b-instruct-v2
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Startup ID</label>
+            <input type="text" id="p-sid" placeholder="e.g. ST014" />
+          </div>
+          <div class="form-group">
+            <label>Grant ID</label>
+            <input type="text" id="p-gid" placeholder="e.g. GR002" />
+          </div>
+          <div style="padding-bottom:2px;">
+            <button class="btn btn-purple" onclick="generateProposal()">✍️ Generate Draft</button>
+          </div>
+        </div>
+        <div id="proposal-startup-info" style="font-size:12px;color:#888;margin-bottom:8px;"></div>
+      </div>
+
+      <div id="proposal-output" style="display:none;">
+        <div class="ai-label"><span class="spinner" id="prop-spinner" style="display:none;"></span> IBM Granite Output</div>
+        <div class="ai-output" id="proposal-text"></div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="copyText('proposal-text')">📋 Copy</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadText('proposal-text', 'grant_proposal.txt')">⬇️ Download</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ELIGIBILITY CHECK ─────────────────────────────────────────────── -->
+    <div id="page-eligibility" class="page">
+      <div class="page-title">✅ Eligibility Checker</div>
+      <div class="page-subtitle">AI-powered analysis of startup–grant compatibility</div>
+
+      <div class="card">
+        <div class="ibm-granite-badge" style="margin-bottom:14px;">
+          🤖 <span>IBM Granite</span> · ibm/granite-13b-instruct-v2
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Startup ID</label>
+            <input type="text" id="e-sid" placeholder="e.g. ST006" />
+          </div>
+          <div class="form-group">
+            <label>Grant ID</label>
+            <input type="text" id="e-gid" placeholder="e.g. GR001" />
+          </div>
+          <div style="padding-bottom:2px;">
+            <button class="btn btn-teal" onclick="checkEligibility()">✅ Analyse</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="elig-output" style="display:none;">
+        <div class="ai-label"><span class="spinner" id="elig-spinner" style="display:none;"></span> Eligibility Analysis</div>
+        <div class="ai-output" id="elig-text"></div>
+      </div>
+    </div>
+
+    <!-- ── ABOUT ──────────────────────────────────────────────────────────── -->
+    <div id="page-about" class="page">
+      <div class="page-title">ℹ️ About — PS-18</div>
+      <div class="page-subtitle">AI Grant & Funding Finder for Startups</div>
+
+      <div class="card">
+        <div class="card-title">🎯 Problem Statement #18</div>
+        <p style="line-height:1.8;font-size:13px;">
+          Developing an AI-based Grant and Funding Finder for startups solves the challenge
+          of navigating dispersed, complex funding opportunities. This system aggregates
+          <strong>15 curated grant schemes</strong> and matches them against
+          <strong>80 startup profiles</strong> using a multi-signal scoring engine.
+          IBM Granite generates personalised application drafts and eligibility analyses.
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="card-title">🏗️ Architecture</div>
+          <ul style="font-size:13px;line-height:2;padding-left:18px;">
+            <li><strong>Backend:</strong> FastAPI (Python)</li>
+            <li><strong>AI Engine:</strong> IBM Granite 13B Instruct v2</li>
+            <li><strong>Platform:</strong> IBM watsonx.ai (Cloud Lite)</li>
+            <li><strong>Matching:</strong> Multi-signal scoring (stage, sector, DPIIT, deadline, funding)</li>
+            <li><strong>Datasets:</strong> grant_schemes_15.json · startup_profiles_80.csv</li>
+            <li><strong>Frontend:</strong> Vanilla HTML/CSS/JS</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">🔗 API Endpoints</div>
+          <table class="data-table">
+            <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+            <tr><td><span class="tag blue">GET</span></td><td>/api/startups</td><td>List startups</td></tr>
+            <tr><td><span class="tag blue">GET</span></td><td>/api/grants</td><td>List grants</td></tr>
+            <tr><td><span class="tag" style="background:#e8daff;color:#6929c4;border-color:#d4bbff;">POST</span></td><td>/api/match</td><td>Match grants</td></tr>
+            <tr><td><span class="tag" style="background:#e8daff;color:#6929c4;border-color:#d4bbff;">POST</span></td><td>/api/proposal</td><td>Generate proposal</td></tr>
+            <tr><td><span class="tag" style="background:#e8daff;color:#6929c4;border-color:#d4bbff;">POST</span></td><td>/api/eligibility</td><td>Check eligibility</td></tr>
+            <tr><td><span class="tag blue">GET</span></td><td>/api/statistics</td><td>Dashboard stats</td></tr>
+            <tr><td><span class="tag blue">GET</span></td><td>/docs</td><td>Swagger UI</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Matching Score Signals</div>
+        <table class="data-table">
+          <tr><th>Signal</th><th>Weight</th><th>Description</th></tr>
+          <tr><td>Stage Match</td><td>35%</td><td>Startup stage must be in grant's eligible_stages list</td></tr>
+          <tr><td>Sector Match</td><td>35%</td><td>Sector match (full = 1.0, "Any" grant = 0.8)</td></tr>
+          <tr><td>DPIIT Compliance</td><td>15%</td><td>DPIIT recognition requirement met</td></tr>
+          <tr><td>Deadline Freshness</td><td>10%</td><td>More time remaining → higher score</td></tr>
+          <tr><td>Funding Relevance</td><td>5%</td><td>Log-normalised max funding amount</td></tr>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API = '';  // same-origin
+
+// ── Page navigation ──────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'startups' && !window._startupsLoaded) loadStartups();
+  if (id === 'grants' && !window._grantsLoaded) loadGrants();
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function fmt(n) {
+  if (n === 0) return 'Non-monetary';
+  if (n >= 10000000) return '₹' + (n/10000000).toFixed(1) + ' Cr';
+  if (n >= 100000) return '₹' + (n/100000).toFixed(1) + ' L';
+  return '₹' + n.toLocaleString('en-IN');
+}
+function scoreClass(s) {
+  if (s >= 0.65) return 'score-high';
+  if (s >= 0.4) return 'score-med';
+  return 'score-low';
+}
+function copyText(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText).then(() => alert('Copied!'));
+}
+function downloadText(id, filename) {
+  const text = document.getElementById(id).innerText;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
+  a.download = filename;
+  a.click();
+}
+function showSpinner(id) { document.getElementById(id).style.display = 'inline-block'; }
+function hideSpinner(id) { document.getElementById(id).style.display = 'none'; }
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const r = await fetch(API + '/api/statistics');
+    const d = await r.json();
+    document.getElementById('stat-grants').textContent = d.total_grants;
+    document.getElementById('stat-startups').textContent = d.total_startups;
+    document.getElementById('stat-funding').textContent = (d.total_max_funding_inr / 10000000).toFixed(1);
+    document.getElementById('stat-bodies').textContent = d.offering_bodies.length;
+
+    // Sector tags
+    const st = document.getElementById('dash-sectors');
+    d.sectors_covered.forEach(s => {
+      const t = document.createElement('span');
+      t.className = 'tag blue';
+      t.textContent = s;
+      st.appendChild(t);
+    });
+
+    // Sector bar chart
+    const barsEl = document.getElementById('dash-sector-bars');
+    const max = Math.max(...Object.values(d.top_sectors));
+    Object.entries(d.top_sectors).forEach(([k, v]) => {
+      const pct = Math.round(v / max * 100);
+      barsEl.innerHTML += `
+        <div style="margin-bottom:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#525252;">
+            <span>${k}</span><span>${v}</span>
+          </div>
+          <div class="score-bar-bg"><div class="score-bar-fill teal" style="width:${pct}%"></div></div>
+        </div>`;
+    });
+  } catch(e) {
+    console.error('Dashboard load error', e);
+  }
+}
+
+// ── Quick Match ───────────────────────────────────────────────────────────────
+async function quickMatch() {
+  const sid = document.getElementById('quick-sid').value.trim();
+  if (!sid) { alert('Enter a Startup ID'); return; }
+  const el = document.getElementById('quick-result');
+  el.innerHTML = '<div class="alert alert-info">⏳ Matching…</div>';
+  try {
+    const r = await fetch(API + '/api/match', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({startup_id: sid.toUpperCase(), max_results: 5})
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
+    const d = await r.json();
+    if (!d.matches.length) { el.innerHTML = '<div class="alert alert-info">No matches found above threshold.</div>'; return; }
+    el.innerHTML = `<div style="font-size:12px;color:#888;margin-bottom:8px;">Top ${d.matches.length} matches for <strong>${sid.toUpperCase()}</strong> (${d.sector} · ${d.stage})</div>`;
+    d.matches.slice(0,3).forEach(m => {
+      el.innerHTML += `<div class="match-card" style="margin-bottom:8px;">
+        <div class="match-header">
+          <div>
+            <div class="match-name">${m.grant_name}</div>
+            <div class="match-body">${m.offering_body}</div>
+          </div>
+          <span class="score-badge ${scoreClass(m.match_score)}">${(m.match_score*100).toFixed(0)}% match</span>
+        </div>
+        <div class="tag-row">
+          <span class="tag blue">${fmt(m.max_funding_amount_inr)}</span>
+          <span class="tag">Deadline: ${m.application_deadline}</span>
+        </div>
+      </div>`;
+    });
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+// ── Full Match ────────────────────────────────────────────────────────────────
+async function doMatch() {
+  const sid = document.getElementById('m-sid').value.trim();
+  const sector = document.getElementById('m-sector').value;
+  const stage = document.getElementById('m-stage').value;
+  const dpiit = document.getElementById('m-dpiit').value;
+  const minScore = parseFloat(document.getElementById('m-minscore').value) || 0.3;
+  const maxR = parseInt(document.getElementById('m-maxresults').value) || 10;
+
+  const body = { min_score: minScore, max_results: maxR };
+  if (sid) body.startup_id = sid.toUpperCase();
+  else {
+    if (!sector || !stage || !dpiit) { alert('Fill Startup ID or all manual fields.'); return; }
+    body.sector = sector; body.stage = stage; body.dpiit_recognized = dpiit;
+  }
+
+  const el = document.getElementById('match-results');
+  el.innerHTML = '<div class="alert alert-info">⏳ Scoring grants…</div>';
+
+  try {
+    const r = await fetch(API + '/api/match', {
+      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
+    const d = await r.json();
+
+    if (!d.matches.length) {
+      el.innerHTML = '<div class="alert alert-info">No grants matched above the threshold. Try lowering Min Score.</div>';
+      return;
+    }
+
+    el.innerHTML = `<div class="alert alert-success">✅ Found <strong>${d.total_matches}</strong> matching grants for <strong>${d.sector} · ${d.stage}</strong></div>`;
+    const list = document.createElement('div');
+    list.className = 'match-list';
+
+    d.matches.forEach(m => {
+      const bd = m.score_breakdown;
+      const signals = [
+        {label:'Stage', val: bd.stage / 0.35, color:''},
+        {label:'Sector', val: bd.sector / 0.35, color:'teal'},
+        {label:'DPIIT', val: bd.dpiit / 0.15, color:'purple'},
+        {label:'Deadline', val: bd.deadline / 0.10, color:'green'},
+        {label:'Funding', val: bd.funding / 0.05, color:'yellow'},
+      ];
+      const barsHtml = signals.map(s =>
+        `<div class="score-bar-label"><span>${s.label}</span><span>${(s.val*100).toFixed(0)}%</span></div>
+         <div class="score-bar-bg"><div class="score-bar-fill ${s.color}" style="width:${Math.min(s.val*100,100)}%"></div></div>`
+      ).join('');
+
+      const stagesHtml = m.eligible_stages.map(s => `<span class="tag">${s}</span>`).join('');
+      const sectorsHtml = m.eligible_sectors.map(s => `<span class="tag teal">${s}</span>`).join('');
+
+      list.innerHTML += `
+        <div class="match-card">
+          <div class="match-header">
+            <div>
+              <div class="match-name">${m.grant_name}</div>
+              <div class="match-body">${m.offering_body}</div>
+            </div>
+            <span class="score-badge ${scoreClass(m.match_score)}">${(m.match_score*100).toFixed(1)}% match</span>
+          </div>
+          <div class="tag-row">
+            <span class="funding-amount">${fmt(m.max_funding_amount_inr)}</span>
+            <span class="deadline-text">📅 ${m.application_deadline}</span>
+          </div>
+          <div class="tag-row">${stagesHtml}</div>
+          <div class="tag-row">${sectorsHtml}</div>
+          <div class="score-bar-wrap" style="margin-top:8px;">${barsHtml}</div>
+          <details style="margin-top:8px;font-size:12px;">
+            <summary style="cursor:pointer;color:#0f62fe;font-weight:600;">📋 Requirements</summary>
+            <p style="margin-top:6px;color:#525252;line-height:1.6;">${m.key_requirements}</p>
+          </details>
+          <div class="match-actions">
+            <button class="btn btn-purple btn-sm" onclick="prefillProposal('${d.startup_id||''}','${m.grant_id}')">✍️ Generate Proposal</button>
+            <button class="btn btn-teal btn-sm" onclick="prefillEligibility('${d.startup_id||''}','${m.grant_id}')">✅ Check Eligibility</button>
+          </div>
+        </div>`;
+    });
+    el.appendChild(list);
+  } catch(e) {
+    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
+  }
+}
+
+// ── Startups ──────────────────────────────────────────────────────────────────
+let _allStartups = [];
+async function loadStartups() {
+  window._startupsLoaded = true;
+  const r = await fetch(API + '/api/startups');
+  _allStartups = await r.json();
+  renderStartups(_allStartups);
+}
+function filterStartups() {
+  const sec = document.getElementById('f-sector').value.toLowerCase();
+  const stg = document.getElementById('f-stage').value.toLowerCase();
+  const dp = document.getElementById('f-dpiit').value.toLowerCase();
+  const q = document.getElementById('f-search').value.toLowerCase();
+  const filtered = _allStartups.filter(s =>
+    (!sec || s.sector.toLowerCase() === sec) &&
+    (!stg || s.stage.toLowerCase() === stg) &&
+    (!dp || s.dpiit_recognized.toLowerCase() === dp) &&
+    (!q || s.company_name.toLowerCase().includes(q) || s.startup_id.toLowerCase().includes(q))
+  );
+  renderStartups(filtered);
+}
+function renderStartups(list) {
+  document.getElementById('startup-count').textContent = `Showing ${list.length} startups`;
+  const grid = document.getElementById('startup-grid');
+  grid.innerHTML = list.map(s => `
+    <div class="startup-card" onclick="prefillProposal('${s.startup_id}',''); showNavPage('proposal');">
+      <div class="startup-card-name">${s.startup_id} · ${s.company_name}</div>
+      <div class="startup-card-meta">
+        <span class="tag blue">${s.sector}</span>
+        <span class="tag">${s.stage}</span>
+        <span class="tag ${s.dpiit_recognized==='Yes'?'teal':''}">DPIIT: ${s.dpiit_recognized}</span>
+        <span style="color:#888;">${s.city}, ${s.state}</span>
+      </div>
+      <div style="font-size:11px;color:#525252;margin-top:6px;line-height:1.5;">${s.tech_focus.length>80?s.tech_focus.slice(0,80)+'…':s.tech_focus}</div>
+      <div style="font-size:11px;color:#009d9a;margin-top:4px;">Revenue: ₹${Number(s.annual_revenue_inr).toLocaleString('en-IN')}</div>
+    </div>`).join('');
+}
+
+// ── Grants ─────────────────────────────────────────────────────────────────────
+async function loadGrants() {
+  window._grantsLoaded = true;
+  const r = await fetch(API + '/api/grants');
+  const grants = await r.json();
+  const grid = document.getElementById('grant-grid');
+  grid.innerHTML = grants.map(g => `
+    <div class="grant-card">
+      <div class="grant-card-name">${g.grant_id} · ${g.grant_name}</div>
+      <div class="grant-card-body">${g.offering_body}</div>
+      <div class="tag-row" style="margin-bottom:8px;">
+        <span class="tag blue">${fmt(g.max_funding_amount_inr)}</span>
+        ${g.eligible_stages.map(s=>`<span class="tag">${s}</span>`).join('')}
+      </div>
+      <div class="tag-row" style="margin-bottom:8px;">
+        ${g.eligible_sectors.map(s=>`<span class="tag teal">${s}</span>`).join('')}
+      </div>
+      <div class="grant-card-meta">📅 ${g.application_deadline} &nbsp;|&nbsp; DPIIT: ${g.min_dpiit_recognized}</div>
+      <div style="font-size:11px;color:#525252;margin-top:6px;line-height:1.5;">${g.key_requirements}</div>
+      <div class="match-actions" style="margin-top:10px;">
+        <button class="btn btn-purple btn-sm" onclick="prefillProposal('',this.closest('.grant-card').querySelector('.grant-card-name').textContent.split('·')[0].trim()); showNavPage('proposal');">✍️ Draft Proposal</button>
+        <button class="btn btn-secondary btn-sm" onclick="loadGrantSummary('${g.grant_id}', this)">📖 AI Summary</button>
+      </div>
+      <div class="grant-summary-${g.grant_id}" style="display:none;margin-top:8px;"></div>
+    </div>`).join('');
+}
+
+async function loadGrantSummary(gid, btn) {
+  btn.textContent = '⏳ Summarising…';
+  btn.disabled = true;
+  try {
+    const r = await fetch(API + `/api/grants/${gid}/summary`);
+    const d = await r.json();
+    const el = document.querySelector(`.grant-summary-${gid}`);
+    el.style.display = 'block';
+    el.innerHTML = `<div class="ai-label">IBM Granite Summary</div><div class="ai-output" style="min-height:auto;">${d.summary}</div>`;
+    btn.style.display = 'none';
+  } catch(e) {
+    btn.textContent = '📖 AI Summary';
+    btn.disabled = false;
+  }
+}
+
+// ── AI Proposal ───────────────────────────────────────────────────────────────
+function prefillProposal(sid, gid) {
+  if (sid) document.getElementById('p-sid').value = sid;
+  if (gid) document.getElementById('p-gid').value = gid;
+}
+async function generateProposal() {
+  const sid = document.getElementById('p-sid').value.trim().toUpperCase();
+  const gid = document.getElementById('p-gid').value.trim().toUpperCase();
+  if (!sid || !gid) { alert('Enter both Startup ID and Grant ID'); return; }
+
+  const outEl = document.getElementById('proposal-output');
+  const textEl = document.getElementById('proposal-text');
+  outEl.style.display = 'block';
+  showSpinner('prop-spinner');
+  textEl.textContent = 'Generating with IBM Granite…';
+
+  try {
+    const r = await fetch(API + '/api/proposal', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({startup_id: sid, grant_id: gid})
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
+    const d = await r.json();
+    textEl.textContent = d.proposal_text;
+    document.getElementById('proposal-startup-info').textContent =
+      `${d.company_name} → ${d.grant_name} | Model: ${d.model_used}`;
+  } catch(e) {
+    textEl.textContent = 'Error: ' + e.message;
+  } finally {
+    hideSpinner('prop-spinner');
+  }
+}
+
+// ── Eligibility ───────────────────────────────────────────────────────────────
+function prefillEligibility(sid, gid) {
+  document.getElementById('e-sid').value = sid;
+  document.getElementById('e-gid').value = gid;
+  showNavPage('eligibility');
+}
+function showNavPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(id)) n.classList.add('active');
+  });
+}
+async function checkEligibility() {
+  const sid = document.getElementById('e-sid').value.trim().toUpperCase();
+  const gid = document.getElementById('e-gid').value.trim().toUpperCase();
+  if (!sid || !gid) { alert('Enter both Startup ID and Grant ID'); return; }
+
+  const outEl = document.getElementById('elig-output');
+  const textEl = document.getElementById('elig-text');
+  outEl.style.display = 'block';
+  showSpinner('elig-spinner');
+  textEl.textContent = 'Analysing with IBM Granite…';
+
+  try {
+    const r = await fetch(API + '/api/eligibility', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({startup_id: sid, grant_id: gid})
+    });
+    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
+    const d = await r.json();
+    textEl.textContent = d.analysis;
+  } catch(e) {
+    textEl.textContent = 'Error: ' + e.message;
+  } finally {
+    hideSpinner('elig-spinner');
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadDashboard();
+</script>
+</body>
+</html>

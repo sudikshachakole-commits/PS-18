@@ -1,0 +1,81 @@
+startup_id,company_name,sector,stage,city,state,dpiit_recognized,tech_focus,annual_revenue_inr
+ST001,HealthTech BetaLabs_Systems_1,HealthTech,Pre-seed,Jaipur,Rajasthan,Yes,Wearable continuous glucose monitor backed by low-power edge computing (Variant 1),7589709
+ST002,FinTech AlphaTech_Corp_2,FinTech,Pre-seed,Ahmedabad,Gujarat,No,Neo-banking application focused on financial literacy for blue-collar staff (Variant 2),3017183
+ST003,BioTech BetaLabs_Systems_3,BioTech,Bootstrapped,Nagpur,Maharashtra,Yes,Enzymatic industrial waste treatment reducing toxic effluent footprint (Variant 3),7436273
+ST004,CleanTech AlphaTech_Corp_4,CleanTech,Series A,Patna,Bihar,Yes,Electric vehicle fleet route optimization system minimizing battery degradation (Variant 4),6771884
+ST005,Logistics BetaLabs_Systems_5,Logistics,Bootstrapped,Bangalore,Karnataka,Yes,Reverse logistics orchestration toolkit streamlining e-commerce returns (Variant 5),9434531
+ST006,AgriTech AlphaTech_Corp_6,AgriTech,Seed,Jaipur,Rajasthan,Yes,B2B marketplace connecting regional organic farmers directly to local retailers (Variant 6),9423815
+ST007,FinTech BetaLabs_Systems_7,FinTech,Seed,Kolkata,West Bengal,Yes,Blockchain-backed micro-lending solutions for small MSMEs (Variant 7),3212034
+ST008,E-Commerce AlphaTech_Corp_8,E-Commerce,Pre-seed,Hyderabad,Telangana,Yes,Voice-driven e-commerce buying assistant designed for first-time internet users (Variant 8),8975847
+ST009,AgriTech BetaLabs_Systems_9,AgriTech,Bootstrapped,Gurugram,Haryana,Yes,Drone-based soil nutrient analysis and localized pesticide spraying (Variant 9),2744095
+ST010,Logistics AlphaTech_Corp_10,Logistics,Early Traction,Kochi,Kerala,No,Reverse logistics orchestration toolkit streamlining e-commerce returns (Variant 10),12234457
+ST011,BioTech BetaLabs_Systems_11,BioTech,Seed,Jaipur,Rajasthan,Yes,Enzymatic industrial waste treatment reducing toxic effluent footprint (Variant 11),22288315
+ST012,CleanTech AlphaTech_Corp_12,CleanTech,Early Traction,Mumbai,Maharashtra,Yes,Biodegradable polymers replacing single-use packaging from seaweed (Variant 12),12854919
+ST013,EdTech BetaLabs_Systems_13,EdTech,Bootstrapped,Ahmedabad,Gujarat,Yes,AI adaptive testing system analyzing micro-behaviors for personalized learning (Variant 13),12521212
+ST014,DeepTech/AI AlphaTech_Corp_14,DeepTech/AI,Seed,Ahmedabad,Gujarat,Yes,Conversational AI agents trained on vernacular legal and compliance files (Variant 14),20539044
+ST015,FinTech BetaLabs_Systems_15,FinTech,Series A,Jaipur,Rajasthan,Yes,Automated cross-border payment gateway tailored for small scale exporters (Variant 15),15610878
+ST016,E-Commerce AlphaTech_Corp_16,E-Commerce,Early Traction,Indore,Madhya Pradesh,No,Voice-driven e-commerce buying assistant designed for first-time internet users (Variant 16),7469062
+ST017,DeepTech/AI BetaLabs_Systems_17,DeepTech/AI,Pre-seed,Bangalore,Karnataka,Yes,Privacy-preserving federated machine learning layers for banking tech (Variant 17),13560856
+ST018,EdTech AlphaTech_Corp_18,EdTech,Pre-seed,Bangalore,Karnataka,No,Virtual reality vocational skill training simulators for industrial trades (Variant 18),7234562
+ST019,SaaS BetaLabs_Systems_19,SaaS,Bootstrapped,Indore,Madhya Pradesh,No,Collaborative remote workspace tracking platform prioritizing data privacy (Variant 19),4893975
+ST020,EdTech AlphaTech_Corp_20,EdTech,Seed,Bangalore,Karnataka,No,Low-bandwidth interactive live streaming engine for rural classrooms (Variant 20),18185076
+ST021,EdTech BetaLabs_Systems_21,EdTech,Series A,Delhi,Delhi,No,Peer-to-peer regional language micro-tutoring community platform (Variant 21),12246585
+ST022,CleanTech AlphaTech_Corp_22,CleanTech,Seed,Gurugram,Haryana,Yes,Biodegradable polymers replacing single-use packaging from seaweed (Variant 22),1680963
+ST023,HealthTech BetaLabs_Systems_23,HealthTech,Seed,Ahmedabad,Gujarat,Yes,Automated pharmaceutical inventory tracking using localized smart shelves (Variant 23),20112166
+ST024,HealthTech AlphaTech_Corp_24,HealthTech,Bootstrapped,Delhi,Delhi,No,Automated pharmaceutical inventory tracking using localized smart shelves (Variant 24),17854131
+ST025,EdTech BetaLabs_Systems_25,EdTech,Series A,Kochi,Kerala,Yes,Offline-first gamified learning modules for regional languages (Variant 25),22974404
+ST026,Logistics AlphaTech_Corp_26,Logistics,Early Traction,Kolkata,West Bengal,No,Cold-chain temperature logging ledger utilizing lightweight hardware seals (Variant 26),3843069
+ST027,EdTech BetaLabs_Systems_27,EdTech,Bootstrapped,Pune,Maharashtra,Yes,Offline-first gamified learning modules for regional languages (Variant 27),24329388
+ST028,EdTech AlphaTech_Corp_28,EdTech,Series A,Kolkata,West Bengal,Yes,Low-bandwidth interactive live streaming engine for rural classrooms (Variant 28),3670554
+ST029,EdTech BetaLabs_Systems_29,EdTech,Series A,Patna,Bihar,Yes,AI adaptive testing system analyzing micro-behaviors for personalized learning (Variant 29),12646466
+ST030,FinTech AlphaTech_Corp_30,FinTech,Series A,Kolkata,West Bengal,No,Blockchain-backed micro-lending solutions for small MSMEs (Variant 30),20197245
+ST031,DeepTech/AI BetaLabs_Systems_31,DeepTech/AI,Bootstrapped,Nagpur,Maharashtra,Yes,Privacy-preserving federated machine learning layers for banking tech (Variant 31),10418461
+ST032,CleanTech AlphaTech_Corp_32,CleanTech,Pre-seed,Bangalore,Karnataka,No,Biodegradable polymers replacing single-use packaging from seaweed (Variant 32),2974052
+ST033,SaaS BetaLabs_Systems_33,SaaS,Pre-seed,Kolkata,West Bengal,No,No-code customer loyalty program configuration suite for mid-market retail (Variant 33),4408102
+ST034,SaaS AlphaTech_Corp_34,SaaS,Series A,Pune,Maharashtra,Yes,Predictive maintenance monitoring suite for industrial factory hardware (Variant 34),20453914
+ST035,E-Commerce BetaLabs_Systems_35,E-Commerce,Seed,Indore,Madhya Pradesh,No,AI personalized styling and virtual clothing fitment engine for apparel (Variant 35),24022597
+ST036,EdTech AlphaTech_Corp_36,EdTech,Bootstrapped,Ahmedabad,Gujarat,No,Virtual reality vocational skill training simulators for industrial trades (Variant 36),14800199
+ST037,Logistics BetaLabs_Systems_37,Logistics,Bootstrapped,Mumbai,Maharashtra,Yes,Warehouse floor robotics sorting package workflows dynamically (Variant 37),2248352
+ST038,DeepTech/AI AlphaTech_Corp_38,DeepTech/AI,Pre-seed,Patna,Bihar,No,Edge-AI automated defect visual tracking system for high-speed manufacturing (Variant 38),19844773
+ST039,CleanTech BetaLabs_Systems_39,CleanTech,Pre-seed,Mumbai,Maharashtra,No,Biodegradable polymers replacing single-use packaging from seaweed (Variant 39),7782011
+ST040,HealthTech AlphaTech_Corp_40,HealthTech,Pre-seed,Kochi,Kerala,Yes,AI diagnostics for rural clinics using minimal computing infrastructure (Variant 40),17352216
+ST041,CleanTech BetaLabs_Systems_41,CleanTech,Early Traction,Ahmedabad,Gujarat,Yes,IoT-enabled residential greywater recycling and smart filtration kit (Variant 41),18193688
+ST042,FinTech AlphaTech_Corp_42,FinTech,Series A,Patna,Bihar,Yes,Automated cross-border payment gateway tailored for small scale exporters (Variant 42),15970338
+ST043,E-Commerce BetaLabs_Systems_43,E-Commerce,Seed,Mumbai,Maharashtra,Yes,Social commerce engine enabling community leaders to curate curated group purchases (Variant 43),11988253
+ST044,E-Commerce AlphaTech_Corp_44,E-Commerce,Bootstrapped,Noida,Uttar Pradesh,No,Hyperlocal instant delivery logistics layer for fresh community groceries (Variant 44),22694364
+ST045,HealthTech BetaLabs_Systems_45,HealthTech,Pre-seed,Delhi,Delhi,No,Telemedicine infrastructure tailored for low-bandwidth tier-3 regions (Variant 45),3766460
+ST046,CleanTech AlphaTech_Corp_46,CleanTech,Seed,Bangalore,Karnataka,No,Upcycling construction waste debris into low-cost structural bricks (Variant 46),4803737
+ST047,E-Commerce BetaLabs_Systems_47,E-Commerce,Seed,Chennai,Tamil Nadu,Yes,AI personalized styling and virtual clothing fitment engine for apparel (Variant 47),2629497
+ST048,SaaS AlphaTech_Corp_48,SaaS,Series A,Mumbai,Maharashtra,Yes,Predictive maintenance monitoring suite for industrial factory hardware (Variant 48),595191
+ST049,HealthTech BetaLabs_Systems_49,HealthTech,Seed,Pune,Maharashtra,Yes,Automated pharmaceutical inventory tracking using localized smart shelves (Variant 49),16251708
+ST050,CleanTech AlphaTech_Corp_50,CleanTech,Bootstrapped,Indore,Madhya Pradesh,Yes,IoT-enabled residential greywater recycling and smart filtration kit (Variant 50),12816227
+ST051,AgriTech BetaLabs_Systems_51,AgriTech,Bootstrapped,Chennai,Tamil Nadu,Yes,B2B marketplace connecting regional organic farmers directly to local retailers (Variant 51),14293775
+ST052,Logistics AlphaTech_Corp_52,Logistics,Bootstrapped,Pune,Maharashtra,Yes,Cold-chain temperature logging ledger utilizing lightweight hardware seals (Variant 52),7404829
+ST053,AgriTech BetaLabs_Systems_53,AgriTech,Series A,Jaipur,Rajasthan,No,IoT based precision farming and automated irrigation systems (Variant 53),10622831
+ST054,AgriTech AlphaTech_Corp_54,AgriTech,Pre-seed,Patna,Bihar,Yes,Solar-powered smart cold storage units for perishable farm produce (Variant 54),17921635
+ST055,FinTech BetaLabs_Systems_55,FinTech,Pre-seed,Gurugram,Haryana,Yes,Automated cross-border payment gateway tailored for small scale exporters (Variant 55),2399194
+ST056,BioTech AlphaTech_Corp_56,BioTech,Pre-seed,Ahmedabad,Gujarat,Yes,Portable rapid testing kit identifying waterborne pathogen DNA markers (Variant 56),4122727
+ST057,BioTech BetaLabs_Systems_57,BioTech,Seed,Patna,Bihar,No,Enzymatic industrial waste treatment reducing toxic effluent footprint (Variant 57),20882994
+ST058,HealthTech AlphaTech_Corp_58,HealthTech,Bootstrapped,Ahmedabad,Gujarat,No,AI-assisted radiology screening tool for rapid tuberculosis identification (Variant 58),17641677
+ST059,DeepTech/AI BetaLabs_Systems_59,DeepTech/AI,Early Traction,Bangalore,Karnataka,No,Privacy-preserving federated machine learning layers for banking tech (Variant 59),8108971
+ST060,EdTech AlphaTech_Corp_60,EdTech,Bootstrapped,Pune,Maharashtra,No,Virtual reality vocational skill training simulators for industrial trades (Variant 60),15441910
+ST061,DeepTech/AI BetaLabs_Systems_61,DeepTech/AI,Pre-seed,Nagpur,Maharashtra,Yes,Quantum-resistant cryptographic middleware for secure enterprise storage (Variant 61),18990931
+ST062,HealthTech AlphaTech_Corp_62,HealthTech,Pre-seed,Gurugram,Haryana,Yes,AI-assisted radiology screening tool for rapid tuberculosis identification (Variant 62),8998649
+ST063,FinTech BetaLabs_Systems_63,FinTech,Early Traction,Indore,Madhya Pradesh,Yes,Automated cross-border payment gateway tailored for small scale exporters (Variant 63),12499271
+ST064,EdTech AlphaTech_Corp_64,EdTech,Seed,Noida,Uttar Pradesh,No,Virtual reality vocational skill training simulators for industrial trades (Variant 64),20624499
+ST065,Logistics BetaLabs_Systems_65,Logistics,Pre-seed,Ahmedabad,Gujarat,No,Cold-chain temperature logging ledger utilizing lightweight hardware seals (Variant 65),22359631
+ST066,HealthTech AlphaTech_Corp_66,HealthTech,Seed,Chennai,Tamil Nadu,Yes,AI diagnostics for rural clinics using minimal computing infrastructure (Variant 66),18663105
+ST067,FinTech BetaLabs_Systems_67,FinTech,Early Traction,Chennai,Tamil Nadu,No,Automated cross-border payment gateway tailored for small scale exporters (Variant 67),24179069
+ST068,DeepTech/AI AlphaTech_Corp_68,DeepTech/AI,Seed,Ahmedabad,Gujarat,No,Privacy-preserving federated machine learning layers for banking tech (Variant 68),17058713
+ST069,SaaS BetaLabs_Systems_69,SaaS,Early Traction,Indore,Madhya Pradesh,Yes,Automated compliance tracking tool built for GST and tax filings (Variant 69),21383054
+ST070,E-Commerce AlphaTech_Corp_70,E-Commerce,Early Traction,Nagpur,Maharashtra,Yes,B2B procurement aggregation marketplace for manufacturing spare parts (Variant 70),4489579
+ST071,EdTech BetaLabs_Systems_71,EdTech,Seed,Jaipur,Rajasthan,Yes,Low-bandwidth interactive live streaming engine for rural classrooms (Variant 71),23778270
+ST072,E-Commerce AlphaTech_Corp_72,E-Commerce,Series A,Nagpur,Maharashtra,Yes,Hyperlocal instant delivery logistics layer for fresh community groceries (Variant 72),23286770
+ST073,FinTech BetaLabs_Systems_73,FinTech,Series A,Nagpur,Maharashtra,Yes,Neo-banking application focused on financial literacy for blue-collar staff (Variant 73),18639665
+ST074,FinTech AlphaTech_Corp_74,FinTech,Bootstrapped,Pune,Maharashtra,Yes,Alternative credit scoring models using alternative utility metadata (Variant 74),12335674
+ST075,AgriTech BetaLabs_Systems_75,AgriTech,Early Traction,Bangalore,Karnataka,No,AI-driven crop disease detection via smartphone camera images (Variant 75),22478571
+ST076,HealthTech AlphaTech_Corp_76,HealthTech,Early Traction,Kolkata,West Bengal,No,Automated pharmaceutical inventory tracking using localized smart shelves (Variant 76),20925944
+ST077,FinTech BetaLabs_Systems_77,FinTech,Seed,Kochi,Kerala,Yes,Automated cross-border payment gateway tailored for small scale exporters (Variant 77),13934304
+ST078,AgriTech AlphaTech_Corp_78,AgriTech,Seed,Jaipur,Rajasthan,Yes,Drone-based soil nutrient analysis and localized pesticide spraying (Variant 78),22578353
+ST079,CleanTech BetaLabs_Systems_79,CleanTech,Early Traction,Pune,Maharashtra,No,Biodegradable polymers replacing single-use packaging from seaweed (Variant 79),12935970
+ST080,AgriTech AlphaTech_Corp_80,AgriTech,Bootstrapped,Bangalore,Karnataka,Yes,Drone-based soil nutrient analysis and localized pesticide spraying (Variant 80),11832589
