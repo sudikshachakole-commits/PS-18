@@ -5,409 +5,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Grant & Funding Finder — PS-18</title>
   <style>
-    /* ── Reset & Base ────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --ibm-blue: #0f62fe;
-      --ibm-blue-hover: #0353e9;
-      --ibm-gray-10: #f4f4f4;
-      --ibm-gray-20: #e0e0e0;
-      --ibm-gray-70: #525252;
-      --ibm-gray-90: #262626;
-      --ibm-teal: #009d9a;
-      --ibm-purple: #8a3ffc;
-      --ibm-green: #24a148;
-      --ibm-red: #da1e28;
-      --ibm-yellow: #f1c21b;
-      --surface: #ffffff;
-      --sidebar-bg: #161616;
-      --radius: 4px;
+      --ibm-blue: #0f62fe; --ibm-blue-hover: #0353e9;
+      --ibm-gray-10: #f4f4f4; --ibm-gray-20: #e0e0e0;
+      --ibm-gray-70: #525252; --ibm-gray-90: #262626;
+      --ibm-teal: #009d9a; --ibm-purple: #8a3ffc;
+      --ibm-green: #24a148; --ibm-red: #da1e28; --ibm-yellow: #f1c21b;
+      --surface: #ffffff; --sidebar-bg: #161616; --radius: 4px;
       --shadow: 0 2px 8px rgba(0,0,0,.12);
     }
-    body {
-      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-      font-size: 14px;
-      color: var(--ibm-gray-90);
-      background: var(--ibm-gray-10);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    a { color: var(--ibm-blue); text-decoration: none; }
-    button { cursor: pointer; border: none; border-radius: var(--radius); }
-
-    /* ── Top Bar ─────────────────────────────────────────────────────────── */
-    .topbar {
-      background: var(--sidebar-bg);
-      color: #fff;
-      padding: 0 24px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .topbar-logo { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; }
-    .topbar-logo span { color: var(--ibm-blue); }
-    .topbar-sub { color: #a8a8a8; font-size: 12px; border-left: 1px solid #393939; padding-left: 12px; }
-    .topbar-badge {
-      margin-left: auto;
-      background: var(--ibm-blue);
-      color: #fff;
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: 600;
-    }
-
-    /* ── Layout ──────────────────────────────────────────────────────────── */
-    .layout { display: flex; flex: 1; }
-    .sidebar {
-      width: 220px;
-      min-height: calc(100vh - 48px);
-      background: var(--sidebar-bg);
-      color: #c6c6c6;
-      padding-top: 16px;
-      flex-shrink: 0;
-    }
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 13px;
-      border-left: 3px solid transparent;
-      transition: background .15s, border-color .15s;
-    }
-    .nav-item:hover { background: #282828; }
-    .nav-item.active { background: #393939; border-left-color: var(--ibm-blue); color: #fff; }
-    .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-    .main { flex: 1; padding: 24px; overflow-y: auto; }
-
-    /* ── Cards ───────────────────────────────────────────────────────────── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--ibm-gray-20);
-      border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: var(--ibm-gray-90);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* ── Stats Row ───────────────────────────────────────────────────────── */
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--ibm-gray-20);
-      border-radius: var(--radius);
-      padding: 16px;
-      border-top: 3px solid var(--ibm-blue);
-    }
-    .stat-card.teal { border-top-color: var(--ibm-teal); }
-    .stat-card.purple { border-top-color: var(--ibm-purple); }
-    .stat-card.green { border-top-color: var(--ibm-green); }
-    .stat-value { font-size: 26px; font-weight: 700; color: var(--ibm-gray-90); }
-    .stat-label { font-size: 11px; color: var(--ibm-gray-70); margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
-
-    /* ── Form Controls ───────────────────────────────────────────────────── */
-    .form-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 140px; }
-    label { font-size: 11px; font-weight: 600; color: var(--ibm-gray-70); text-transform: uppercase; letter-spacing: .4px; }
-    select, input[type="text"], input[type="number"], textarea {
-      padding: 8px 10px;
-      border: 1px solid var(--ibm-gray-20);
-      border-radius: var(--radius);
-      font-size: 13px;
-      background: #fff;
-      color: var(--ibm-gray-90);
-      outline: none;
-      transition: border-color .15s;
-    }
-    select:focus, input:focus, textarea:focus { border-color: var(--ibm-blue); }
-    textarea { resize: vertical; min-height: 80px; }
-
-    /* ── Buttons ─────────────────────────────────────────────────────────── */
-    .btn {
-      padding: 9px 18px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: var(--radius);
-      transition: background .15s;
-    }
-    .btn-primary { background: var(--ibm-blue); color: #fff; }
-    .btn-primary:hover { background: var(--ibm-blue-hover); }
-    .btn-secondary { background: var(--ibm-gray-20); color: var(--ibm-gray-90); }
-    .btn-secondary:hover { background: #c6c6c6; }
-    .btn-teal { background: var(--ibm-teal); color: #fff; }
-    .btn-teal:hover { background: #007d79; }
-    .btn-purple { background: var(--ibm-purple); color: #fff; }
-    .btn-purple:hover { background: #6929c4; }
-    .btn-sm { padding: 5px 12px; font-size: 12px; }
-
-    /* ── Match Result Cards ──────────────────────────────────────────────── */
-    .match-list { display: flex; flex-direction: column; gap: 12px; }
-    .match-card {
-      border: 1px solid var(--ibm-gray-20);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .match-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
-    .match-name { font-weight: 700; font-size: 14px; color: var(--ibm-gray-90); }
-    .match-body { font-size: 12px; color: var(--ibm-gray-70); }
-    .score-badge {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 12px;
-      white-space: nowrap;
-    }
-    .score-high { background: #defbe6; color: #0e6027; }
-    .score-med { background: #ffd6e8; color: #740937; }
-    .score-low { background: #fff3cd; color: #7d5600; }
-    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background: var(--ibm-gray-10);
-      color: var(--ibm-gray-70);
-      border: 1px solid var(--ibm-gray-20);
-    }
-    .tag.blue { background: #edf5ff; color: #0043ce; border-color: #97c1ff; }
-    .tag.teal { background: #d9fbfb; color: #005d5d; border-color: #9ef0f0; }
-    .funding-amount { font-size: 13px; font-weight: 700; color: var(--ibm-teal); }
-    .deadline-text { font-size: 12px; color: var(--ibm-gray-70); }
-    .match-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-    .score-bar-wrap { display: flex; flex-direction: column; gap: 3px; }
-    .score-bar-label { font-size: 11px; color: var(--ibm-gray-70); display: flex; justify-content: space-between; }
-    .score-bar-bg { height: 4px; background: var(--ibm-gray-20); border-radius: 2px; overflow: hidden; }
-    .score-bar-fill { height: 100%; background: var(--ibm-blue); border-radius: 2px; transition: width .4s; }
-    .score-bar-fill.teal { background: var(--ibm-teal); }
-    .score-bar-fill.purple { background: var(--ibm-purple); }
-    .score-bar-fill.green { background: var(--ibm-green); }
-    .score-bar-fill.yellow { background: var(--ibm-yellow); }
-
-    /* ── Startup Grid ────────────────────────────────────────────────────── */
-    .startup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-    .startup-card {
-      border: 1px solid var(--ibm-gray-20);
-      border-radius: var(--radius);
-      padding: 14px;
-      background: #fff;
-      cursor: pointer;
-      transition: box-shadow .15s, border-color .15s;
-    }
-    .startup-card:hover { box-shadow: 0 4px 16px rgba(15,98,254,.15); border-color: var(--ibm-blue); }
-    .startup-card-name { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
-    .startup-card-meta { font-size: 11px; color: var(--ibm-gray-70); display: flex; flex-wrap: wrap; gap: 4px; }
-
-    /* ── Grant Grid ──────────────────────────────────────────────────────── */
-    .grant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-    .grant-card {
-      border: 1px solid var(--ibm-gray-20);
-      border-radius: var(--radius);
-      padding: 14px;
-      background: #fff;
-      border-top: 3px solid var(--ibm-blue);
-    }
-    .grant-card-name { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
-    .grant-card-body { font-size: 12px; color: var(--ibm-gray-70); font-style: italic; margin-bottom: 8px; }
-    .grant-card-meta { font-size: 11px; color: var(--ibm-gray-70); }
-
-    /* ── AI Output Box ───────────────────────────────────────────────────── */
-    .ai-output {
-      background: #f4f4f4;
-      border: 1px solid var(--ibm-gray-20);
-      border-left: 4px solid var(--ibm-blue);
-      border-radius: var(--radius);
-      padding: 16px;
-      font-size: 13px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      min-height: 80px;
-      color: var(--ibm-gray-90);
-    }
-    .ai-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ibm-blue);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid var(--ibm-gray-20);
-      border-top-color: var(--ibm-blue);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Alert ───────────────────────────────────────────────────────────── */
-    .alert {
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      font-size: 13px;
-      margin-bottom: 12px;
-    }
-    .alert-info { background: #edf5ff; border: 1px solid #97c1ff; color: #0043ce; }
-    .alert-error { background: #fff1f1; border: 1px solid #ffa4a9; color: #da1e28; }
-    .alert-success { background: #defbe6; border: 1px solid #6fdc8c; color: #0e6027; }
-
-    /* ── Tables ──────────────────────────────────────────────────────────── */
-    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .data-table th {
-      background: var(--ibm-gray-10);
-      padding: 8px 10px;
-      text-align: left;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--ibm-gray-70);
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      border-bottom: 2px solid var(--ibm-gray-20);
-    }
-    .data-table td { padding: 8px 10px; border-bottom: 1px solid var(--ibm-gray-10); vertical-align: middle; }
-    .data-table tr:hover td { background: #f9f9f9; }
-
-    /* ── Page sections ───────────────────────────────────────────────────── */
-    .page { display: none; }
-    .page.active { display: block; }
-    .page-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--ibm-gray-90); }
-    .page-subtitle { font-size: 13px; color: var(--ibm-gray-70); margin-bottom: 20px; }
-
-    /* ── Search bar ──────────────────────────────────────────────────────── */
-    .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
-    .search-row input { flex: 1; }
-
-    /* ── Responsive ──────────────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .sidebar { display: none; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* ── IBM Footer ──────────────────────────────────────────────────────── */
-    .ibm-granite-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #161616;
-      color: #a8a8a8;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 12px;
-    }
-    .ibm-granite-badge span { color: var(--ibm-blue); font-weight: 700; }
+    body { font-family: "IBM Plex Sans","Segoe UI",system-ui,sans-serif; font-size:14px; color:var(--ibm-gray-90); background:var(--ibm-gray-10); display:flex; flex-direction:column; min-height:100vh; }
+    a { color:var(--ibm-blue); text-decoration:none; }
+    button { cursor:pointer; border:none; border-radius:var(--radius); }
+    .topbar { background:var(--sidebar-bg); color:#fff; padding:0 24px; height:48px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:100; }
+    .topbar-logo { font-size:16px; font-weight:700; letter-spacing:-0.3px; }
+    .topbar-logo span { color:var(--ibm-blue); }
+    .topbar-sub { color:#a8a8a8; font-size:12px; border-left:1px solid #393939; padding-left:12px; }
+    .topbar-badge { margin-left:auto; background:var(--ibm-blue); color:#fff; font-size:11px; padding:2px 8px; border-radius:10px; font-weight:600; }
+    .layout { display:flex; flex:1; }
+    .sidebar { width:220px; min-height:calc(100vh - 48px); background:var(--sidebar-bg); color:#c6c6c6; padding-top:16px; flex-shrink:0; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:10px 20px; cursor:pointer; font-size:13px; border-left:3px solid transparent; transition:background .15s,border-color .15s; }
+    .nav-item:hover { background:#282828; }
+    .nav-item.active { background:#393939; border-left-color:var(--ibm-blue); color:#fff; }
+    .nav-icon { font-size:16px; width:20px; text-align:center; }
+    .main { flex:1; padding:24px; overflow-y:auto; }
+    .card { background:var(--surface); border:1px solid var(--ibm-gray-20); border-radius:var(--radius); padding:20px; margin-bottom:16px; box-shadow:var(--shadow); }
+    .card-title { font-size:15px; font-weight:700; margin-bottom:14px; color:var(--ibm-gray-90); display:flex; align-items:center; gap:8px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:20px; }
+    .stat-card { background:var(--surface); border:1px solid var(--ibm-gray-20); border-radius:var(--radius); padding:16px; border-top:3px solid var(--ibm-blue); }
+    .stat-card.teal { border-top-color:var(--ibm-teal); }
+    .stat-card.purple { border-top-color:var(--ibm-purple); }
+    .stat-card.green { border-top-color:var(--ibm-green); }
+    .stat-value { font-size:26px; font-weight:700; color:var(--ibm-gray-90); }
+    .stat-label { font-size:11px; color:var(--ibm-gray-70); margin-top:2px; text-transform:uppercase; letter-spacing:.5px; }
+    .form-row { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:12px; }
+    .form-group { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
+    label { font-size:11px; font-weight:600; color:var(--ibm-gray-70); text-transform:uppercase; letter-spacing:.4px; }
+    select, input[type="text"], input[type="number"], textarea { padding:8px 10px; border:1px solid var(--ibm-gray-20); border-radius:var(--radius); font-size:13px; background:#fff; color:var(--ibm-gray-90); outline:none; transition:border-color .15s; }
+    select:focus, input:focus, textarea:focus { border-color:var(--ibm-blue); }
+    textarea { resize:vertical; min-height:80px; }
+    .btn { padding:9px 18px; font-size:13px; font-weight:600; border-radius:var(--radius); transition:background .15s; }
+    .btn-primary { background:var(--ibm-blue); color:#fff; } .btn-primary:hover { background:var(--ibm-blue-hover); }
+    .btn-secondary { background:var(--ibm-gray-20); color:var(--ibm-gray-90); } .btn-secondary:hover { background:#c6c6c6; }
+    .btn-teal { background:var(--ibm-teal); color:#fff; } .btn-teal:hover { background:#007d79; }
+    .btn-purple { background:var(--ibm-purple); color:#fff; } .btn-purple:hover { background:#6929c4; }
+    .btn-sm { padding:5px 12px; font-size:12px; }
+    .match-list { display:flex; flex-direction:column; gap:12px; }
+    .match-card { border:1px solid var(--ibm-gray-20); border-radius:var(--radius); padding:14px 16px; background:#fff; display:flex; flex-direction:column; gap:8px; }
+    .match-header { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px; }
+    .match-name { font-weight:700; font-size:14px; color:var(--ibm-gray-90); }
+    .match-body { font-size:12px; color:var(--ibm-gray-70); }
+    .score-badge { display:flex; align-items:center; gap:4px; font-size:12px; font-weight:700; padding:3px 10px; border-radius:12px; white-space:nowrap; }
+    .score-high { background:#defbe6; color:#0e6027; } .score-med { background:#ffd6e8; color:#740937; } .score-low { background:#fff3cd; color:#7d5600; }
+    .tag-row { display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { font-size:11px; padding:2px 8px; border-radius:10px; background:var(--ibm-gray-10); color:var(--ibm-gray-70); border:1px solid var(--ibm-gray-20); }
+    .tag.blue { background:#edf5ff; color:#0043ce; border-color:#97c1ff; }
+    .tag.teal { background:#d9fbfb; color:#005d5d; border-color:#9ef0f0; }
+    .funding-amount { font-size:13px; font-weight:700; color:var(--ibm-teal); }
+    .deadline-text { font-size:12px; color:var(--ibm-gray-70); }
+    .match-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+    .score-bar-wrap { display:flex; flex-direction:column; gap:3px; }
+    .score-bar-label { font-size:11px; color:var(--ibm-gray-70); display:flex; justify-content:space-between; }
+    .score-bar-bg { height:4px; background:var(--ibm-gray-20); border-radius:2px; overflow:hidden; }
+    .score-bar-fill { height:100%; background:var(--ibm-blue); border-radius:2px; transition:width .4s; }
+    .score-bar-fill.teal { background:var(--ibm-teal); } .score-bar-fill.purple { background:var(--ibm-purple); }
+    .score-bar-fill.green { background:var(--ibm-green); } .score-bar-fill.yellow { background:var(--ibm-yellow); }
+    .startup-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+    .startup-card { border:1px solid var(--ibm-gray-20); border-radius:var(--radius); padding:14px; background:#fff; cursor:pointer; transition:box-shadow .15s,border-color .15s; }
+    .startup-card:hover { box-shadow:0 4px 16px rgba(15,98,254,.15); border-color:var(--ibm-blue); }
+    .startup-card-name { font-weight:700; font-size:13px; margin-bottom:6px; }
+    .startup-card-meta { font-size:11px; color:var(--ibm-gray-70); display:flex; flex-wrap:wrap; gap:4px; }
+    .grant-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
+    .grant-card { border:1px solid var(--ibm-gray-20); border-radius:var(--radius); padding:14px; background:#fff; border-top:3px solid var(--ibm-blue); }
+    .grant-card-name { font-weight:700; font-size:14px; margin-bottom:6px; }
+    .grant-card-body { font-size:12px; color:var(--ibm-gray-70); font-style:italic; margin-bottom:8px; }
+    .grant-card-meta { font-size:11px; color:var(--ibm-gray-70); }
+    .ai-output { background:#f4f4f4; border:1px solid var(--ibm-gray-20); border-left:4px solid var(--ibm-blue); border-radius:var(--radius); padding:16px; font-size:13px; line-height:1.7; white-space:pre-wrap; min-height:80px; color:var(--ibm-gray-90); }
+    .ai-label { font-size:11px; font-weight:700; color:var(--ibm-blue); text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+    .spinner { display:inline-block; width:14px; height:14px; border:2px solid var(--ibm-gray-20); border-top-color:var(--ibm-blue); border-radius:50%; animation:spin .7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .alert { padding:10px 14px; border-radius:var(--radius); font-size:13px; margin-bottom:12px; }
+    .alert-info { background:#edf5ff; border:1px solid #97c1ff; color:#0043ce; }
+    .alert-error { background:#fff1f1; border:1px solid #ffa4a9; color:#da1e28; }
+    .alert-success { background:#defbe6; border:1px solid #6fdc8c; color:#0e6027; }
+    .data-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .data-table th { background:var(--ibm-gray-10); padding:8px 10px; text-align:left; font-size:11px; font-weight:700; color:var(--ibm-gray-70); text-transform:uppercase; letter-spacing:.4px; border-bottom:2px solid var(--ibm-gray-20); }
+    .data-table td { padding:8px 10px; border-bottom:1px solid var(--ibm-gray-10); vertical-align:middle; }
+    .data-table tr:hover td { background:#f9f9f9; }
+    .page { display:none; } .page.active { display:block; }
+    .page-title { font-size:20px; font-weight:700; margin-bottom:4px; color:var(--ibm-gray-90); }
+    .page-subtitle { font-size:13px; color:var(--ibm-gray-70); margin-bottom:20px; }
+    .ibm-granite-badge { display:inline-flex; align-items:center; gap:6px; background:#161616; color:#a8a8a8; font-size:11px; padding:4px 10px; border-radius:12px; }
+    .ibm-granite-badge span { color:var(--ibm-blue); font-weight:700; }
+    .mock-banner { background:#fff3cd; border:1px solid #f1c21b; color:#7d5600; padding:10px 14px; border-radius:var(--radius); font-size:13px; margin-bottom:16px; }
+    @media (max-width:768px) { .sidebar { display:none; } .stats-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
 </head>
 <body>
 
-<!-- ── Top Bar ──────────────────────────────────────────────────────────── -->
 <div class="topbar">
   <div class="topbar-logo">🔬 Grant<span>Finder</span></div>
-  <div class="topbar-sub">AI-Powered Grant & Funding Finder for Startups</div>
-  <div class="topbar-badge">Powered by IBM Granite</div>
+  <div class="topbar-sub">AI-Powered Grant & Funding Finder · PS-18</div>
+  <div class="topbar-badge">IBM Granite · Standalone Mode</div>
 </div>
 
-<!-- ── Layout ───────────────────────────────────────────────────────────── -->
 <div class="layout">
-
-  <!-- Sidebar -->
   <aside class="sidebar">
-    <div class="nav-item active" onclick="showPage('dashboard')">
-      <span class="nav-icon">📊</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="showPage('match')">
-      <span class="nav-icon">🔍</span> Find Grants
-    </div>
-    <div class="nav-item" onclick="showPage('startups')">
-      <span class="nav-icon">🚀</span> Startups
-    </div>
-    <div class="nav-item" onclick="showPage('grants')">
-      <span class="nav-icon">💰</span> Grant Catalogue
-    </div>
-    <div class="nav-item" onclick="showPage('proposal')">
-      <span class="nav-icon">✍️</span> AI Proposal
-    </div>
-    <div class="nav-item" onclick="showPage('eligibility')">
-      <span class="nav-icon">✅</span> Eligibility Check
-    </div>
-    <div class="nav-item" onclick="showPage('about')">
-      <span class="nav-icon">ℹ️</span> About
-    </div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="showPage('match',this)"><span class="nav-icon">🔍</span> Find Grants</div>
+    <div class="nav-item" onclick="showPage('startups',this)"><span class="nav-icon">🚀</span> Startups</div>
+    <div class="nav-item" onclick="showPage('grants',this)"><span class="nav-icon">💰</span> Grant Catalogue</div>
+    <div class="nav-item" onclick="showPage('proposal',this)"><span class="nav-icon">✍️</span> AI Proposal</div>
+    <div class="nav-item" onclick="showPage('eligibility',this)"><span class="nav-icon">✅</span> Eligibility Check</div>
+    <div class="nav-item" onclick="showPage('about',this)"><span class="nav-icon">ℹ️</span> About</div>
   </aside>
 
-  <!-- Main content -->
   <main class="main">
 
-    <!-- ── DASHBOARD ────────────────────────────────────────────────────── -->
+    <!-- DASHBOARD -->
     <div id="page-dashboard" class="page active">
       <div class="page-title">Dashboard</div>
-      <div class="page-subtitle">Live snapshot of the Grant & Startup ecosystem</div>
-
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card"><div class="stat-value" id="stat-grants">—</div><div class="stat-label">Grant Schemes</div></div>
-        <div class="stat-card teal"><div class="stat-value" id="stat-startups">—</div><div class="stat-label">Startup Profiles</div></div>
-        <div class="stat-card purple"><div class="stat-value" id="stat-funding">—</div><div class="stat-label">Max Funding Pool (₹ Cr)</div></div>
-        <div class="stat-card green"><div class="stat-value" id="stat-bodies">—</div><div class="stat-label">Offering Bodies</div></div>
+      <div class="page-subtitle">Live snapshot — all data loaded in-browser, no backend required</div>
+      <div class="mock-banner">ℹ️ <strong>Standalone Mode:</strong> All grant matching runs in-browser using embedded data. AI Proposal &amp; Eligibility features use template-based generation (no IBM API key needed). To use live IBM Granite generation, run <code>python main.py</code> locally.</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value" id="stat-grants">15</div><div class="stat-label">Grant Schemes</div></div>
+        <div class="stat-card teal"><div class="stat-value" id="stat-startups">80</div><div class="stat-label">Startup Profiles</div></div>
+        <div class="stat-card purple"><div class="stat-value" id="stat-funding">30.7</div><div class="stat-label">Max Funding Pool (₹ Cr)</div></div>
+        <div class="stat-card green"><div class="stat-value" id="stat-bodies">9</div><div class="stat-label">Offering Bodies</div></div>
       </div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div class="card">
           <div class="card-title">🏢 Sectors Covered by Grants</div>
           <div id="dash-sectors" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
         </div>
         <div class="card">
-          <div class="card-title">📈 Startups by Sector (Top 8)</div>
+          <div class="card-title">📈 Startups by Sector</div>
           <div id="dash-sector-bars"></div>
         </div>
       </div>
-
-      <div class="card" style="margin-top:0;">
+      <div class="card">
         <div class="card-title">⚡ Quick Match — Try a startup</div>
         <div class="form-row">
           <div class="form-group">
             <label>Startup ID</label>
             <input type="text" id="quick-sid" placeholder="e.g. ST014" style="max-width:150px;" />
           </div>
-          <div>
-            <button class="btn btn-primary" onclick="quickMatch()">🔍 Find Grants</button>
-          </div>
+          <div><button class="btn btn-primary" onclick="quickMatch()">🔍 Find Grants</button></div>
         </div>
         <div id="quick-result"></div>
       </div>
     </div>
 
-    <!-- ── FIND GRANTS ───────────────────────────────────────────────────── -->
+    <!-- FIND GRANTS -->
     <div id="page-match" class="page">
       <div class="page-title">Find Grants</div>
-      <div class="page-subtitle">Match your startup against the grant catalogue using AI-powered scoring</div>
-
+      <div class="page-subtitle">Match your startup against the grant catalogue</div>
       <div class="card">
         <div class="card-title">🔍 Search Parameters</div>
         <div class="form-row">
@@ -415,7 +168,7 @@
             <label>Startup ID <small style="font-weight:400;text-transform:none;color:#888;">(from dataset)</small></label>
             <input type="text" id="m-sid" placeholder="e.g. ST001" />
           </div>
-          <div style="display:flex;align-items:center;padding-bottom:2px;color:#888;font-size:12px;">— OR fill manually —</div>
+          <div style="display:flex;align-items:center;padding-bottom:2px;color:#888;font-size:12px;">— OR —</div>
           <div class="form-group">
             <label>Sector</label>
             <select id="m-sector">
@@ -435,10 +188,7 @@
           </div>
           <div class="form-group">
             <label>DPIIT Recognised</label>
-            <select id="m-dpiit">
-              <option value="">Select</option>
-              <option>Yes</option><option>No</option>
-            </select>
+            <select id="m-dpiit"><option value="">Select</option><option>Yes</option><option>No</option></select>
           </div>
         </div>
         <div class="form-row">
@@ -450,20 +200,16 @@
             <label>Max Results</label>
             <input type="number" id="m-maxresults" value="10" min="1" max="15" />
           </div>
-          <div style="padding-bottom:2px;">
-            <button class="btn btn-primary" onclick="doMatch()">🔍 Match Grants</button>
-          </div>
+          <div style="padding-bottom:2px;"><button class="btn btn-primary" onclick="doMatch()">🔍 Match Grants</button></div>
         </div>
       </div>
-
       <div id="match-results"></div>
     </div>
 
-    <!-- ── STARTUPS ──────────────────────────────────────────────────────── -->
+    <!-- STARTUPS -->
     <div id="page-startups" class="page">
       <div class="page-title">Startup Profiles</div>
       <div class="page-subtitle">80 startups across sectors, stages, and cities</div>
-
       <div class="card" style="padding:14px;">
         <div class="form-row">
           <div class="form-group">
@@ -484,147 +230,97 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Filter DPIIT</label>
-            <select id="f-dpiit" onchange="filterStartups()">
-              <option value="">All</option><option>Yes</option><option>No</option>
-            </select>
+            <label>DPIIT</label>
+            <select id="f-dpiit" onchange="filterStartups()"><option value="">All</option><option>Yes</option><option>No</option></select>
           </div>
           <div class="form-group">
-            <label>Search Name / ID</label>
-            <input type="text" id="f-search" placeholder="Type to search…" oninput="filterStartups()" />
+            <label>Search</label>
+            <input type="text" id="f-search" placeholder="Name or ID…" oninput="filterStartups()" />
           </div>
         </div>
       </div>
-
       <div id="startup-count" style="font-size:12px;color:#888;margin-bottom:10px;"></div>
       <div class="startup-grid" id="startup-grid"></div>
     </div>
 
-    <!-- ── GRANT CATALOGUE ───────────────────────────────────────────────── -->
+    <!-- GRANT CATALOGUE -->
     <div id="page-grants" class="page">
       <div class="page-title">Grant Catalogue</div>
       <div class="page-subtitle">15 active government grant schemes</div>
       <div class="grant-grid" id="grant-grid"></div>
     </div>
 
-    <!-- ── AI PROPOSAL ───────────────────────────────────────────────────── -->
+    <!-- AI PROPOSAL -->
     <div id="page-proposal" class="page">
       <div class="page-title">✍️ AI Proposal Generator</div>
-      <div class="page-subtitle">Generate a tailored grant application draft using IBM Granite</div>
-
+      <div class="page-subtitle">Generate a tailored grant application draft</div>
       <div class="card">
-        <div class="ibm-granite-badge" style="margin-bottom:14px;">
-          🤖 <span>IBM Granite</span> · ibm/granite-13b-instruct-v2
-        </div>
+        <div class="ibm-granite-badge" style="margin-bottom:14px;">🤖 <span>IBM Granite</span> · Template mode (connect to localhost for live generation)</div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Startup ID</label>
-            <input type="text" id="p-sid" placeholder="e.g. ST014" />
-          </div>
-          <div class="form-group">
-            <label>Grant ID</label>
-            <input type="text" id="p-gid" placeholder="e.g. GR002" />
-          </div>
-          <div style="padding-bottom:2px;">
-            <button class="btn btn-purple" onclick="generateProposal()">✍️ Generate Draft</button>
-          </div>
+          <div class="form-group"><label>Startup ID</label><input type="text" id="p-sid" placeholder="e.g. ST014" /></div>
+          <div class="form-group"><label>Grant ID</label><input type="text" id="p-gid" placeholder="e.g. GR002" /></div>
+          <div style="padding-bottom:2px;"><button class="btn btn-purple" onclick="generateProposal()">✍️ Generate Draft</button></div>
         </div>
         <div id="proposal-startup-info" style="font-size:12px;color:#888;margin-bottom:8px;"></div>
       </div>
-
       <div id="proposal-output" style="display:none;">
-        <div class="ai-label"><span class="spinner" id="prop-spinner" style="display:none;"></span> IBM Granite Output</div>
+        <div class="ai-label"><span class="spinner" id="prop-spinner" style="display:none;"></span> Draft Proposal</div>
         <div class="ai-output" id="proposal-text"></div>
         <div style="margin-top:10px;">
           <button class="btn btn-secondary btn-sm" onclick="copyText('proposal-text')">📋 Copy</button>
-          <button class="btn btn-secondary btn-sm" onclick="downloadText('proposal-text', 'grant_proposal.txt')">⬇️ Download</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadText('proposal-text','grant_proposal.txt')">⬇️ Download</button>
         </div>
       </div>
     </div>
 
-    <!-- ── ELIGIBILITY CHECK ─────────────────────────────────────────────── -->
+    <!-- ELIGIBILITY -->
     <div id="page-eligibility" class="page">
       <div class="page-title">✅ Eligibility Checker</div>
       <div class="page-subtitle">AI-powered analysis of startup–grant compatibility</div>
-
       <div class="card">
-        <div class="ibm-granite-badge" style="margin-bottom:14px;">
-          🤖 <span>IBM Granite</span> · ibm/granite-13b-instruct-v2
-        </div>
+        <div class="ibm-granite-badge" style="margin-bottom:14px;">🤖 <span>IBM Granite</span> · Template mode</div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Startup ID</label>
-            <input type="text" id="e-sid" placeholder="e.g. ST006" />
-          </div>
-          <div class="form-group">
-            <label>Grant ID</label>
-            <input type="text" id="e-gid" placeholder="e.g. GR001" />
-          </div>
-          <div style="padding-bottom:2px;">
-            <button class="btn btn-teal" onclick="checkEligibility()">✅ Analyse</button>
-          </div>
+          <div class="form-group"><label>Startup ID</label><input type="text" id="e-sid" placeholder="e.g. ST006" /></div>
+          <div class="form-group"><label>Grant ID</label><input type="text" id="e-gid" placeholder="e.g. GR001" /></div>
+          <div style="padding-bottom:2px;"><button class="btn btn-teal" onclick="checkEligibility()">✅ Analyse</button></div>
         </div>
       </div>
-
       <div id="elig-output" style="display:none;">
-        <div class="ai-label"><span class="spinner" id="elig-spinner" style="display:none;"></span> Eligibility Analysis</div>
+        <div class="ai-label">Eligibility Analysis</div>
         <div class="ai-output" id="elig-text"></div>
       </div>
     </div>
 
-    <!-- ── ABOUT ──────────────────────────────────────────────────────────── -->
+    <!-- ABOUT -->
     <div id="page-about" class="page">
       <div class="page-title">ℹ️ About — PS-18</div>
       <div class="page-subtitle">AI Grant & Funding Finder for Startups</div>
-
       <div class="card">
         <div class="card-title">🎯 Problem Statement #18</div>
-        <p style="line-height:1.8;font-size:13px;">
-          Developing an AI-based Grant and Funding Finder for startups solves the challenge
-          of navigating dispersed, complex funding opportunities. This system aggregates
-          <strong>15 curated grant schemes</strong> and matches them against
-          <strong>80 startup profiles</strong> using a multi-signal scoring engine.
-          IBM Granite generates personalised application drafts and eligibility analyses.
-        </p>
+        <p style="line-height:1.8;font-size:13px;">An AI-based Grant and Funding Finder that matches <strong>80 Indian startups</strong> against <strong>15 curated grant schemes</strong> using a multi-signal scoring engine. IBM Granite generates personalised application drafts and eligibility analyses when connected to the FastAPI backend.</p>
       </div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div class="card">
           <div class="card-title">🏗️ Architecture</div>
           <ul style="font-size:13px;line-height:2;padding-left:18px;">
-            <li><strong>Backend:</strong> FastAPI (Python)</li>
+            <li><strong>Backend:</strong> FastAPI (Python) — <code>python main.py</code></li>
             <li><strong>AI Engine:</strong> IBM Granite 13B Instruct v2</li>
             <li><strong>Platform:</strong> IBM watsonx.ai (Cloud Lite)</li>
-            <li><strong>Matching:</strong> Multi-signal scoring (stage, sector, DPIIT, deadline, funding)</li>
-            <li><strong>Datasets:</strong> grant_schemes_15.json · startup_profiles_80.csv</li>
-            <li><strong>Frontend:</strong> Vanilla HTML/CSS/JS</li>
+            <li><strong>Matching:</strong> 5-signal weighted scoring</li>
+            <li><strong>Standalone:</strong> This page works offline with embedded data</li>
           </ul>
         </div>
         <div class="card">
-          <div class="card-title">🔗 API Endpoints</div>
+          <div class="card-title">📊 Scoring Signals</div>
           <table class="data-table">
-            <tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
-            <tr><td><span class="tag blue">GET</span></td><td>/api/startups</td><td>List startups</td></tr>
-            <tr><td><span class="tag blue">GET</span></td><td>/api/grants</td><td>List grants</td></tr>
-            <tr><td><span class="tag" style="background:#e8daff;color:#6929c4;border-color:#d4bbff;">POST</span></td><td>/api/match</td><td>Match grants</td></tr>
-            <tr><td><span class="tag" style="background:#e8daff;color:#6929c4;border-color:#d4bbff;">POST</span></td><td>/api/proposal</td><td>Generate proposal</td></tr>
-            <tr><td><span class="tag" style="background:#e8daff;color:#6929c4;border-color:#d4bbff;">POST</span></td><td>/api/eligibility</td><td>Check eligibility</td></tr>
-            <tr><td><span class="tag blue">GET</span></td><td>/api/statistics</td><td>Dashboard stats</td></tr>
-            <tr><td><span class="tag blue">GET</span></td><td>/docs</td><td>Swagger UI</td></tr>
+            <tr><th>Signal</th><th>Weight</th></tr>
+            <tr><td>Stage Match</td><td>35%</td></tr>
+            <tr><td>Sector Match</td><td>35%</td></tr>
+            <tr><td>DPIIT Compliance</td><td>15%</td></tr>
+            <tr><td>Deadline Freshness</td><td>10%</td></tr>
+            <tr><td>Funding Relevance</td><td>5%</td></tr>
           </table>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📊 Matching Score Signals</div>
-        <table class="data-table">
-          <tr><th>Signal</th><th>Weight</th><th>Description</th></tr>
-          <tr><td>Stage Match</td><td>35%</td><td>Startup stage must be in grant's eligible_stages list</td></tr>
-          <tr><td>Sector Match</td><td>35%</td><td>Sector match (full = 1.0, "Any" grant = 0.8)</td></tr>
-          <tr><td>DPIIT Compliance</td><td>15%</td><td>DPIIT recognition requirement met</td></tr>
-          <tr><td>Deadline Freshness</td><td>10%</td><td>More time remaining → higher score</td></tr>
-          <tr><td>Funding Relevance</td><td>5%</td><td>Log-normalised max funding amount</td></tr>
-        </table>
       </div>
     </div>
 
@@ -632,227 +328,260 @@
 </div>
 
 <script>
-const API = '';  // same-origin
+// ── Embedded Datasets ─────────────────────────────────────────────────────────
+const GRANTS = [
+  {"grant_id":"GR001","grant_name":"Startup India Seed Fund Scheme (SISFS)","offering_body":"DPIIT","max_funding_amount_inr":5000000,"eligible_stages":["Pre-seed","Seed","Early Traction"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Requires verifiable innovation matching thematic domain goals of DPIIT. Application must submit milestones.","application_deadline":"2027-05-27"},
+  {"grant_id":"GR002","grant_name":"MeitY TIDE 2.0 Grant","offering_body":"MeitY","max_funding_amount_inr":700000,"eligible_stages":["Pre-seed","Seed"],"eligible_sectors":["DeepTech/AI","FinTech","EdTech","HealthTech","SaaS"],"min_dpiit_recognized":"Any","key_requirements":"Requires verifiable innovation matching thematic domain goals of MeitY. Application must submit milestones.","application_deadline":"2027-04-08"},
+  {"grant_id":"GR003","grant_name":"BIRAC BIG Scheme","offering_body":"BIRAC","max_funding_amount_inr":5000000,"eligible_stages":["Seed","Early Traction"],"eligible_sectors":["BioTech","HealthTech","AgriTech"],"min_dpiit_recognized":"Any","key_requirements":"Requires verifiable innovation matching thematic domain goals of BIRAC. Application must submit milestones.","application_deadline":"2027-01-22"},
+  {"grant_id":"GR004","grant_name":"NIDHI PRAYAS Program","offering_body":"DST","max_funding_amount_inr":1000000,"eligible_stages":["Pre-seed","Prototype Development"],"eligible_sectors":["DeepTech/AI","CleanTech","AgriTech"],"min_dpiit_recognized":"Any","key_requirements":"Requires verifiable innovation matching thematic domain goals of DST. Application must submit milestones.","application_deadline":"2027-04-13"},
+  {"grant_id":"GR005","grant_name":"MeitY SAMRIDH Accelerator","offering_body":"MeitY","max_funding_amount_inr":4000000,"eligible_stages":["Early Traction","Series A"],"eligible_sectors":["SaaS","DeepTech/AI","FinTech"],"min_dpiit_recognized":"Yes","key_requirements":"Requires verifiable innovation matching thematic domain goals of MeitY. Application must submit milestones.","application_deadline":"2027-06-09"},
+  {"grant_id":"GR006","grant_name":"Maharashtra State Innovation Society Grant","offering_body":"MSInS","max_funding_amount_inr":1500000,"eligible_stages":["Seed","Early Traction"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Requires verifiable innovation matching thematic domain goals of MSInS. Application must submit milestones.","application_deadline":"2027-02-25"},
+  {"grant_id":"GR007","grant_name":"AIC Academic Incubation Seed Support","offering_body":"AIM","max_funding_amount_inr":2500000,"eligible_stages":["Pre-seed","Seed"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Any","key_requirements":"Requires verifiable innovation matching thematic domain goals of AIM. Application must submit milestones.","application_deadline":"2027-05-12"},
+  {"grant_id":"GR008","grant_name":"DST-SEED Technology Development","offering_body":"DST","max_funding_amount_inr":3000000,"eligible_stages":["Early Traction","Series A"],"eligible_sectors":["AgriTech","CleanTech","BioTech"],"min_dpiit_recognized":"Any","key_requirements":"Requires verifiable innovation matching thematic domain goals of DST. Application must submit milestones.","application_deadline":"2027-11-17"},
+  {"grant_id":"GR009","grant_name":"National Bio Entrepreneurship Competition (NBEC)","offering_body":"BREC","max_funding_amount_inr":2000000,"eligible_stages":["Seed","Bootstrapped"],"eligible_sectors":["BioTech","HealthTech","AgriTech"],"min_dpiit_recognized":"Any","key_requirements":"Requires verifiable innovation matching thematic domain goals of BREC. Application must submit milestones.","application_deadline":"2027-07-22"},
+  {"grant_id":"GR010","grant_name":"GeM StartUp Runway Program","offering_body":"Ministry of Commerce","max_funding_amount_inr":0,"eligible_stages":["Early Traction","Series A"],"eligible_sectors":["Logistics","SaaS","E-Commerce"],"min_dpiit_recognized":"Yes","key_requirements":"Requires verifiable innovation matching thematic domain goals of Ministry of Commerce. Application must submit milestones.","application_deadline":"2027-09-11"},
+  {"grant_id":"GR011","grant_name":"Regional State Tier-2 Innovation Hub Grant Type 11","offering_body":"State Electronics Mission","max_funding_amount_inr":1200000,"eligible_stages":["Seed","Bootstrapped"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Operations must be headquartered inside state technology parks.","application_deadline":"Open Year-Round"},
+  {"grant_id":"GR012","grant_name":"Regional State Tier-2 Innovation Hub Grant Type 12","offering_body":"State Electronics Mission","max_funding_amount_inr":1200000,"eligible_stages":["Seed","Bootstrapped"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Operations must be headquartered inside state technology parks.","application_deadline":"Open Year-Round"},
+  {"grant_id":"GR013","grant_name":"Regional State Tier-2 Innovation Hub Grant Type 13","offering_body":"State Electronics Mission","max_funding_amount_inr":1200000,"eligible_stages":["Seed","Bootstrapped"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Operations must be headquartered inside state technology parks.","application_deadline":"Open Year-Round"},
+  {"grant_id":"GR014","grant_name":"Regional State Tier-2 Innovation Hub Grant Type 14","offering_body":"State Electronics Mission","max_funding_amount_inr":1200000,"eligible_stages":["Seed","Bootstrapped"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Operations must be headquartered inside state technology parks.","application_deadline":"Open Year-Round"},
+  {"grant_id":"GR015","grant_name":"Regional State Tier-2 Innovation Hub Grant Type 15","offering_body":"State Electronics Mission","max_funding_amount_inr":1200000,"eligible_stages":["Seed","Bootstrapped"],"eligible_sectors":["Any"],"min_dpiit_recognized":"Yes","key_requirements":"Operations must be headquartered inside state technology parks.","application_deadline":"Open Year-Round"}
+];
+// Startup profiles embedded
+const STARTUPS = [
+  {startup_id:"ST001",company_name:"HealthTech BetaLabs_Systems_1",sector:"HealthTech",stage:"Pre-seed",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"Yes",tech_focus:"Wearable continuous glucose monitor backed by low-power edge computing (Variant 1)",annual_revenue_inr:7589709},
+  {startup_id:"ST002",company_name:"FinTech AlphaTech_Corp_2",sector:"FinTech",stage:"Pre-seed",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"No",tech_focus:"Neo-banking application focused on financial literacy for blue-collar staff (Variant 2)",annual_revenue_inr:3017183},
+  {startup_id:"ST003",company_name:"BioTech BetaLabs_Systems_3",sector:"BioTech",stage:"Bootstrapped",city:"Nagpur",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Enzymatic industrial waste treatment reducing toxic effluent footprint (Variant 3)",annual_revenue_inr:7436273},
+  {startup_id:"ST004",company_name:"CleanTech AlphaTech_Corp_4",sector:"CleanTech",stage:"Series A",city:"Patna",state:"Bihar",dpiit_recognized:"Yes",tech_focus:"Electric vehicle fleet route optimization system minimizing battery degradation (Variant 4)",annual_revenue_inr:6771884},
+  {startup_id:"ST005",company_name:"Logistics BetaLabs_Systems_5",sector:"Logistics",stage:"Bootstrapped",city:"Bangalore",state:"Karnataka",dpiit_recognized:"Yes",tech_focus:"Reverse logistics orchestration toolkit streamlining e-commerce returns (Variant 5)",annual_revenue_inr:9434531},
+  {startup_id:"ST006",company_name:"AgriTech AlphaTech_Corp_6",sector:"AgriTech",stage:"Seed",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"Yes",tech_focus:"B2B marketplace connecting regional organic farmers directly to local retailers (Variant 6)",annual_revenue_inr:9423815},
+  {startup_id:"ST007",company_name:"FinTech BetaLabs_Systems_7",sector:"FinTech",stage:"Seed",city:"Kolkata",state:"West Bengal",dpiit_recognized:"Yes",tech_focus:"Blockchain-backed micro-lending solutions for small MSMEs (Variant 7)",annual_revenue_inr:3212034},
+  {startup_id:"ST008",company_name:"E-Commerce AlphaTech_Corp_8",sector:"E-Commerce",stage:"Pre-seed",city:"Hyderabad",state:"Telangana",dpiit_recognized:"Yes",tech_focus:"Voice-driven e-commerce buying assistant designed for first-time internet users (Variant 8)",annual_revenue_inr:8975847},
+  {startup_id:"ST009",company_name:"AgriTech BetaLabs_Systems_9",sector:"AgriTech",stage:"Bootstrapped",city:"Gurugram",state:"Haryana",dpiit_recognized:"Yes",tech_focus:"Drone-based soil nutrient analysis and localized pesticide spraying (Variant 9)",annual_revenue_inr:2744095},
+  {startup_id:"ST010",company_name:"Logistics AlphaTech_Corp_10",sector:"Logistics",stage:"Early Traction",city:"Kochi",state:"Kerala",dpiit_recognized:"No",tech_focus:"Reverse logistics orchestration toolkit streamlining e-commerce returns (Variant 10)",annual_revenue_inr:12234457},
+  {startup_id:"ST011",company_name:"BioTech BetaLabs_Systems_11",sector:"BioTech",stage:"Seed",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"Yes",tech_focus:"Enzymatic industrial waste treatment reducing toxic effluent footprint (Variant 11)",annual_revenue_inr:22288315},
+  {startup_id:"ST012",company_name:"CleanTech AlphaTech_Corp_12",sector:"CleanTech",stage:"Early Traction",city:"Mumbai",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Biodegradable polymers replacing single-use packaging from seaweed (Variant 12)",annual_revenue_inr:12854919},
+  {startup_id:"ST013",company_name:"EdTech BetaLabs_Systems_13",sector:"EdTech",stage:"Bootstrapped",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"Yes",tech_focus:"AI adaptive testing system analyzing micro-behaviors for personalized learning (Variant 13)",annual_revenue_inr:12521212},
+  {startup_id:"ST014",company_name:"DeepTech/AI AlphaTech_Corp_14",sector:"DeepTech/AI",stage:"Seed",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"Yes",tech_focus:"Conversational AI agents trained on vernacular legal and compliance files (Variant 14)",annual_revenue_inr:20539044},
+  {startup_id:"ST015",company_name:"FinTech BetaLabs_Systems_15",sector:"FinTech",stage:"Series A",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"Yes",tech_focus:"Automated cross-border payment gateway tailored for small scale exporters (Variant 15)",annual_revenue_inr:15610878},
+  {startup_id:"ST016",company_name:"E-Commerce AlphaTech_Corp_16",sector:"E-Commerce",stage:"Early Traction",city:"Indore",state:"Madhya Pradesh",dpiit_recognized:"No",tech_focus:"Voice-driven e-commerce buying assistant designed for first-time internet users (Variant 16)",annual_revenue_inr:7469062},
+  {startup_id:"ST017",company_name:"DeepTech/AI BetaLabs_Systems_17",sector:"DeepTech/AI",stage:"Pre-seed",city:"Bangalore",state:"Karnataka",dpiit_recognized:"Yes",tech_focus:"Privacy-preserving federated machine learning layers for banking tech (Variant 17)",annual_revenue_inr:13560856},
+  {startup_id:"ST018",company_name:"EdTech AlphaTech_Corp_18",sector:"EdTech",stage:"Pre-seed",city:"Bangalore",state:"Karnataka",dpiit_recognized:"No",tech_focus:"Virtual reality vocational skill training simulators for industrial trades (Variant 18)",annual_revenue_inr:7234562},
+  {startup_id:"ST019",company_name:"SaaS BetaLabs_Systems_19",sector:"SaaS",stage:"Bootstrapped",city:"Indore",state:"Madhya Pradesh",dpiit_recognized:"No",tech_focus:"Collaborative remote workspace tracking platform prioritizing data privacy (Variant 19)",annual_revenue_inr:4893975},
+  {startup_id:"ST020",company_name:"EdTech AlphaTech_Corp_20",sector:"EdTech",stage:"Seed",city:"Bangalore",state:"Karnataka",dpiit_recognized:"No",tech_focus:"Low-bandwidth interactive live streaming engine for rural classrooms (Variant 20)",annual_revenue_inr:18185076},
+  {startup_id:"ST021",company_name:"EdTech BetaLabs_Systems_21",sector:"EdTech",stage:"Series A",city:"Delhi",state:"Delhi",dpiit_recognized:"No",tech_focus:"Peer-to-peer regional language micro-tutoring community platform (Variant 21)",annual_revenue_inr:12246585},
+  {startup_id:"ST022",company_name:"CleanTech AlphaTech_Corp_22",sector:"CleanTech",stage:"Seed",city:"Gurugram",state:"Haryana",dpiit_recognized:"Yes",tech_focus:"Biodegradable polymers replacing single-use packaging from seaweed (Variant 22)",annual_revenue_inr:1680963},
+  {startup_id:"ST023",company_name:"HealthTech BetaLabs_Systems_23",sector:"HealthTech",stage:"Seed",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"Yes",tech_focus:"Automated pharmaceutical inventory tracking using localized smart shelves (Variant 23)",annual_revenue_inr:20112166},
+  {startup_id:"ST024",company_name:"HealthTech AlphaTech_Corp_24",sector:"HealthTech",stage:"Bootstrapped",city:"Delhi",state:"Delhi",dpiit_recognized:"No",tech_focus:"Automated pharmaceutical inventory tracking using localized smart shelves (Variant 24)",annual_revenue_inr:17854131},
+  {startup_id:"ST025",company_name:"EdTech BetaLabs_Systems_25",sector:"EdTech",stage:"Series A",city:"Kochi",state:"Kerala",dpiit_recognized:"Yes",tech_focus:"Offline-first gamified learning modules for regional languages (Variant 25)",annual_revenue_inr:22974404},
+  {startup_id:"ST026",company_name:"Logistics AlphaTech_Corp_26",sector:"Logistics",stage:"Early Traction",city:"Kolkata",state:"West Bengal",dpiit_recognized:"No",tech_focus:"Cold-chain temperature logging ledger utilizing lightweight hardware seals (Variant 26)",annual_revenue_inr:3843069},
+  {startup_id:"ST027",company_name:"EdTech BetaLabs_Systems_27",sector:"EdTech",stage:"Bootstrapped",city:"Pune",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Offline-first gamified learning modules for regional languages (Variant 27)",annual_revenue_inr:24329388},
+  {startup_id:"ST028",company_name:"EdTech AlphaTech_Corp_28",sector:"EdTech",stage:"Series A",city:"Kolkata",state:"West Bengal",dpiit_recognized:"Yes",tech_focus:"Low-bandwidth interactive live streaming engine for rural classrooms (Variant 28)",annual_revenue_inr:3670554},
+  {startup_id:"ST029",company_name:"EdTech BetaLabs_Systems_29",sector:"EdTech",stage:"Series A",city:"Patna",state:"Bihar",dpiit_recognized:"Yes",tech_focus:"AI adaptive testing system analyzing micro-behaviors for personalized learning (Variant 29)",annual_revenue_inr:12646466},
+  {startup_id:"ST030",company_name:"FinTech AlphaTech_Corp_30",sector:"FinTech",stage:"Series A",city:"Kolkata",state:"West Bengal",dpiit_recognized:"No",tech_focus:"Blockchain-backed micro-lending solutions for small MSMEs (Variant 30)",annual_revenue_inr:20197245},
+  {startup_id:"ST031",company_name:"DeepTech/AI BetaLabs_Systems_31",sector:"DeepTech/AI",stage:"Bootstrapped",city:"Nagpur",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Privacy-preserving federated machine learning layers for banking tech (Variant 31)",annual_revenue_inr:10418461},
+  {startup_id:"ST032",company_name:"CleanTech AlphaTech_Corp_32",sector:"CleanTech",stage:"Pre-seed",city:"Bangalore",state:"Karnataka",dpiit_recognized:"No",tech_focus:"Biodegradable polymers replacing single-use packaging from seaweed (Variant 32)",annual_revenue_inr:2974052},
+  {startup_id:"ST033",company_name:"SaaS BetaLabs_Systems_33",sector:"SaaS",stage:"Pre-seed",city:"Kolkata",state:"West Bengal",dpiit_recognized:"No",tech_focus:"No-code customer loyalty program configuration suite for mid-market retail (Variant 33)",annual_revenue_inr:4408102},
+  {startup_id:"ST034",company_name:"SaaS AlphaTech_Corp_34",sector:"SaaS",stage:"Series A",city:"Pune",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Predictive maintenance monitoring suite for industrial factory hardware (Variant 34)",annual_revenue_inr:20453914},
+  {startup_id:"ST035",company_name:"E-Commerce BetaLabs_Systems_35",sector:"E-Commerce",stage:"Seed",city:"Indore",state:"Madhya Pradesh",dpiit_recognized:"No",tech_focus:"AI personalized styling and virtual clothing fitment engine for apparel (Variant 35)",annual_revenue_inr:24022597},
+  {startup_id:"ST036",company_name:"EdTech AlphaTech_Corp_36",sector:"EdTech",stage:"Bootstrapped",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"No",tech_focus:"Virtual reality vocational skill training simulators for industrial trades (Variant 36)",annual_revenue_inr:14800199},
+  {startup_id:"ST037",company_name:"Logistics BetaLabs_Systems_37",sector:"Logistics",stage:"Bootstrapped",city:"Mumbai",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Warehouse floor robotics sorting package workflows dynamically (Variant 37)",annual_revenue_inr:2248352},
+  {startup_id:"ST038",company_name:"DeepTech/AI AlphaTech_Corp_38",sector:"DeepTech/AI",stage:"Pre-seed",city:"Patna",state:"Bihar",dpiit_recognized:"No",tech_focus:"Edge-AI automated defect visual tracking system for high-speed manufacturing (Variant 38)",annual_revenue_inr:19844773},
+  {startup_id:"ST039",company_name:"CleanTech BetaLabs_Systems_39",sector:"CleanTech",stage:"Pre-seed",city:"Mumbai",state:"Maharashtra",dpiit_recognized:"No",tech_focus:"Biodegradable polymers replacing single-use packaging from seaweed (Variant 39)",annual_revenue_inr:7782011},
+  {startup_id:"ST040",company_name:"HealthTech AlphaTech_Corp_40",sector:"HealthTech",stage:"Pre-seed",city:"Kochi",state:"Kerala",dpiit_recognized:"Yes",tech_focus:"AI diagnostics for rural clinics using minimal computing infrastructure (Variant 40)",annual_revenue_inr:17352216},
+  {startup_id:"ST041",company_name:"CleanTech BetaLabs_Systems_41",sector:"CleanTech",stage:"Early Traction",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"Yes",tech_focus:"IoT-enabled residential greywater recycling and smart filtration kit (Variant 41)",annual_revenue_inr:18193688},
+  {startup_id:"ST042",company_name:"FinTech AlphaTech_Corp_42",sector:"FinTech",stage:"Series A",city:"Patna",state:"Bihar",dpiit_recognized:"Yes",tech_focus:"Automated cross-border payment gateway tailored for small scale exporters (Variant 42)",annual_revenue_inr:15970338},
+  {startup_id:"ST043",company_name:"E-Commerce BetaLabs_Systems_43",sector:"E-Commerce",stage:"Seed",city:"Mumbai",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Social commerce engine enabling community leaders to curate curated group purchases (Variant 43)",annual_revenue_inr:11988253},
+  {startup_id:"ST044",company_name:"E-Commerce AlphaTech_Corp_44",sector:"E-Commerce",stage:"Bootstrapped",city:"Noida",state:"Uttar Pradesh",dpiit_recognized:"No",tech_focus:"Hyperlocal instant delivery logistics layer for fresh community groceries (Variant 44)",annual_revenue_inr:22694364},
+  {startup_id:"ST045",company_name:"HealthTech BetaLabs_Systems_45",sector:"HealthTech",stage:"Pre-seed",city:"Delhi",state:"Delhi",dpiit_recognized:"No",tech_focus:"Telemedicine infrastructure tailored for low-bandwidth tier-3 regions (Variant 45)",annual_revenue_inr:3766460},
+  {startup_id:"ST046",company_name:"CleanTech AlphaTech_Corp_46",sector:"CleanTech",stage:"Seed",city:"Bangalore",state:"Karnataka",dpiit_recognized:"No",tech_focus:"Upcycling construction waste debris into low-cost structural bricks (Variant 46)",annual_revenue_inr:4803737},
+  {startup_id:"ST047",company_name:"E-Commerce BetaLabs_Systems_47",sector:"E-Commerce",stage:"Seed",city:"Chennai",state:"Tamil Nadu",dpiit_recognized:"Yes",tech_focus:"AI personalized styling and virtual clothing fitment engine for apparel (Variant 47)",annual_revenue_inr:2629497},
+  {startup_id:"ST048",company_name:"SaaS AlphaTech_Corp_48",sector:"SaaS",stage:"Series A",city:"Mumbai",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Predictive maintenance monitoring suite for industrial factory hardware (Variant 48)",annual_revenue_inr:595191},
+  {startup_id:"ST049",company_name:"HealthTech BetaLabs_Systems_49",sector:"HealthTech",stage:"Seed",city:"Pune",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Automated pharmaceutical inventory tracking using localized smart shelves (Variant 49)",annual_revenue_inr:16251708},
+  {startup_id:"ST050",company_name:"CleanTech AlphaTech_Corp_50",sector:"CleanTech",stage:"Bootstrapped",city:"Indore",state:"Madhya Pradesh",dpiit_recognized:"Yes",tech_focus:"IoT-enabled residential greywater recycling and smart filtration kit (Variant 50)",annual_revenue_inr:12816227},
+  {startup_id:"ST051",company_name:"AgriTech BetaLabs_Systems_51",sector:"AgriTech",stage:"Bootstrapped",city:"Chennai",state:"Tamil Nadu",dpiit_recognized:"Yes",tech_focus:"B2B marketplace connecting regional organic farmers directly to local retailers (Variant 51)",annual_revenue_inr:14293775},
+  {startup_id:"ST052",company_name:"Logistics AlphaTech_Corp_52",sector:"Logistics",stage:"Bootstrapped",city:"Pune",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Cold-chain temperature logging ledger utilizing lightweight hardware seals (Variant 52)",annual_revenue_inr:7404829},
+  {startup_id:"ST053",company_name:"AgriTech BetaLabs_Systems_53",sector:"AgriTech",stage:"Series A",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"No",tech_focus:"IoT based precision farming and automated irrigation systems (Variant 53)",annual_revenue_inr:10622831},
+  {startup_id:"ST054",company_name:"AgriTech AlphaTech_Corp_54",sector:"AgriTech",stage:"Pre-seed",city:"Patna",state:"Bihar",dpiit_recognized:"Yes",tech_focus:"Solar-powered smart cold storage units for perishable farm produce (Variant 54)",annual_revenue_inr:17921635},
+  {startup_id:"ST055",company_name:"FinTech BetaLabs_Systems_55",sector:"FinTech",stage:"Pre-seed",city:"Gurugram",state:"Haryana",dpiit_recognized:"Yes",tech_focus:"Automated cross-border payment gateway tailored for small scale exporters (Variant 55)",annual_revenue_inr:2399194},
+  {startup_id:"ST056",company_name:"BioTech AlphaTech_Corp_56",sector:"BioTech",stage:"Pre-seed",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"Yes",tech_focus:"Portable rapid testing kit identifying waterborne pathogen DNA markers (Variant 56)",annual_revenue_inr:4122727},
+  {startup_id:"ST057",company_name:"BioTech BetaLabs_Systems_57",sector:"BioTech",stage:"Seed",city:"Patna",state:"Bihar",dpiit_recognized:"No",tech_focus:"Enzymatic industrial waste treatment reducing toxic effluent footprint (Variant 57)",annual_revenue_inr:20882994},
+  {startup_id:"ST058",company_name:"HealthTech AlphaTech_Corp_58",sector:"HealthTech",stage:"Bootstrapped",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"No",tech_focus:"AI-assisted radiology screening tool for rapid tuberculosis identification (Variant 58)",annual_revenue_inr:17641677},
+  {startup_id:"ST059",company_name:"DeepTech/AI BetaLabs_Systems_59",sector:"DeepTech/AI",stage:"Early Traction",city:"Bangalore",state:"Karnataka",dpiit_recognized:"No",tech_focus:"Privacy-preserving federated machine learning layers for banking tech (Variant 59)",annual_revenue_inr:8108971},
+  {startup_id:"ST060",company_name:"EdTech AlphaTech_Corp_60",sector:"EdTech",stage:"Bootstrapped",city:"Pune",state:"Maharashtra",dpiit_recognized:"No",tech_focus:"Virtual reality vocational skill training simulators for industrial trades (Variant 60)",annual_revenue_inr:15441910},
+  {startup_id:"ST061",company_name:"DeepTech/AI BetaLabs_Systems_61",sector:"DeepTech/AI",stage:"Pre-seed",city:"Nagpur",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Quantum-resistant cryptographic middleware for secure enterprise storage (Variant 61)",annual_revenue_inr:18990931},
+  {startup_id:"ST062",company_name:"HealthTech AlphaTech_Corp_62",sector:"HealthTech",stage:"Pre-seed",city:"Gurugram",state:"Haryana",dpiit_recognized:"Yes",tech_focus:"AI-assisted radiology screening tool for rapid tuberculosis identification (Variant 62)",annual_revenue_inr:8998649},
+  {startup_id:"ST063",company_name:"FinTech BetaLabs_Systems_63",sector:"FinTech",stage:"Early Traction",city:"Indore",state:"Madhya Pradesh",dpiit_recognized:"Yes",tech_focus:"Automated cross-border payment gateway tailored for small scale exporters (Variant 63)",annual_revenue_inr:12499271},
+  {startup_id:"ST064",company_name:"EdTech AlphaTech_Corp_64",sector:"EdTech",stage:"Seed",city:"Noida",state:"Uttar Pradesh",dpiit_recognized:"No",tech_focus:"Virtual reality vocational skill training simulators for industrial trades (Variant 64)",annual_revenue_inr:20624499},
+  {startup_id:"ST065",company_name:"Logistics BetaLabs_Systems_65",sector:"Logistics",stage:"Pre-seed",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"No",tech_focus:"Cold-chain temperature logging ledger utilizing lightweight hardware seals (Variant 65)",annual_revenue_inr:22359631},
+  {startup_id:"ST066",company_name:"HealthTech AlphaTech_Corp_66",sector:"HealthTech",stage:"Seed",city:"Chennai",state:"Tamil Nadu",dpiit_recognized:"Yes",tech_focus:"AI diagnostics for rural clinics using minimal computing infrastructure (Variant 66)",annual_revenue_inr:18663105},
+  {startup_id:"ST067",company_name:"FinTech BetaLabs_Systems_67",sector:"FinTech",stage:"Early Traction",city:"Chennai",state:"Tamil Nadu",dpiit_recognized:"No",tech_focus:"Automated cross-border payment gateway tailored for small scale exporters (Variant 67)",annual_revenue_inr:24179069},
+  {startup_id:"ST068",company_name:"DeepTech/AI AlphaTech_Corp_68",sector:"DeepTech/AI",stage:"Seed",city:"Ahmedabad",state:"Gujarat",dpiit_recognized:"No",tech_focus:"Privacy-preserving federated machine learning layers for banking tech (Variant 68)",annual_revenue_inr:17058713},
+  {startup_id:"ST069",company_name:"SaaS BetaLabs_Systems_69",sector:"SaaS",stage:"Early Traction",city:"Indore",state:"Madhya Pradesh",dpiit_recognized:"Yes",tech_focus:"Automated compliance tracking tool built for GST and tax filings (Variant 69)",annual_revenue_inr:21383054},
+  {startup_id:"ST070",company_name:"E-Commerce AlphaTech_Corp_70",sector:"E-Commerce",stage:"Early Traction",city:"Nagpur",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"B2B procurement aggregation marketplace for manufacturing spare parts (Variant 70)",annual_revenue_inr:4489579},
+  {startup_id:"ST071",company_name:"EdTech BetaLabs_Systems_71",sector:"EdTech",stage:"Seed",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"Yes",tech_focus:"Low-bandwidth interactive live streaming engine for rural classrooms (Variant 71)",annual_revenue_inr:23778270},
+  {startup_id:"ST072",company_name:"E-Commerce AlphaTech_Corp_72",sector:"E-Commerce",stage:"Series A",city:"Nagpur",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Hyperlocal instant delivery logistics layer for fresh community groceries (Variant 72)",annual_revenue_inr:23286770},
+  {startup_id:"ST073",company_name:"FinTech BetaLabs_Systems_73",sector:"FinTech",stage:"Series A",city:"Nagpur",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Neo-banking application focused on financial literacy for blue-collar staff (Variant 73)",annual_revenue_inr:18639665},
+  {startup_id:"ST074",company_name:"FinTech AlphaTech_Corp_74",sector:"FinTech",stage:"Bootstrapped",city:"Pune",state:"Maharashtra",dpiit_recognized:"Yes",tech_focus:"Alternative credit scoring models using alternative utility metadata (Variant 74)",annual_revenue_inr:12335674},
+  {startup_id:"ST075",company_name:"AgriTech BetaLabs_Systems_75",sector:"AgriTech",stage:"Early Traction",city:"Bangalore",state:"Karnataka",dpiit_recognized:"No",tech_focus:"AI-driven crop disease detection via smartphone camera images (Variant 75)",annual_revenue_inr:22478571},
+  {startup_id:"ST076",company_name:"HealthTech AlphaTech_Corp_76",sector:"HealthTech",stage:"Early Traction",city:"Kolkata",state:"West Bengal",dpiit_recognized:"No",tech_focus:"Automated pharmaceutical inventory tracking using localized smart shelves (Variant 76)",annual_revenue_inr:20925944},
+  {startup_id:"ST077",company_name:"FinTech BetaLabs_Systems_77",sector:"FinTech",stage:"Seed",city:"Kochi",state:"Kerala",dpiit_recognized:"Yes",tech_focus:"Automated cross-border payment gateway tailored for small scale exporters (Variant 77)",annual_revenue_inr:13934304},
+  {startup_id:"ST078",company_name:"AgriTech AlphaTech_Corp_78",sector:"AgriTech",stage:"Seed",city:"Jaipur",state:"Rajasthan",dpiit_recognized:"Yes",tech_focus:"Drone-based soil nutrient analysis and localized pesticide spraying (Variant 78)",annual_revenue_inr:22578353},
+  {startup_id:"ST079",company_name:"CleanTech BetaLabs_Systems_79",sector:"CleanTech",stage:"Early Traction",city:"Pune",state:"Maharashtra",dpiit_recognized:"No",tech_focus:"Biodegradable polymers replacing single-use packaging from seaweed (Variant 79)",annual_revenue_inr:12935970},
+  {startup_id:"ST080",company_name:"AgriTech AlphaTech_Corp_80",sector:"AgriTech",stage:"Bootstrapped",city:"Bangalore",state:"Karnataka",dpiit_recognized:"Yes",tech_focus:"Drone-based soil nutrient analysis and localized pesticide spraying (Variant 80)",annual_revenue_inr:11832589}
+];
 
-// ── Page navigation ──────────────────────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  event.currentTarget.classList.add('active');
-  if (id === 'startups' && !window._startupsLoaded) loadStartups();
-  if (id === 'grants' && !window._grantsLoaded) loadGrants();
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(n) {
   if (n === 0) return 'Non-monetary';
-  if (n >= 10000000) return '₹' + (n/10000000).toFixed(1) + ' Cr';
-  if (n >= 100000) return '₹' + (n/100000).toFixed(1) + ' L';
-  return '₹' + n.toLocaleString('en-IN');
+  if (n >= 10000000) return '\u20b9' + (n/10000000).toFixed(1) + ' Cr';
+  if (n >= 100000)   return '\u20b9' + (n/100000).toFixed(1) + ' L';
+  return '\u20b9' + n.toLocaleString('en-IN');
 }
 function scoreClass(s) {
   if (s >= 0.65) return 'score-high';
-  if (s >= 0.4) return 'score-med';
+  if (s >= 0.40) return 'score-med';
   return 'score-low';
 }
 function copyText(id) {
-  const el = document.getElementById(id);
-  navigator.clipboard.writeText(el.innerText).then(() => alert('Copied!'));
+  navigator.clipboard.writeText(document.getElementById(id).innerText).then(() => alert('Copied!'));
 }
-function downloadText(id, filename) {
-  const text = document.getElementById(id).innerText;
+function downloadText(id, fn) {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
-  a.download = filename;
-  a.click();
+  a.href = URL.createObjectURL(new Blob([document.getElementById(id).innerText], {type:'text/plain'}));
+  a.download = fn; a.click();
 }
-function showSpinner(id) { document.getElementById(id).style.display = 'inline-block'; }
-function hideSpinner(id) { document.getElementById(id).style.display = 'none'; }
+
+// ── Page nav ──────────────────────────────────────────────────────────────────
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'startups') renderStartups(STARTUPS);
+  if (id === 'grants')   renderGrants();
+}
+
+// ── Matching Engine (JS port of matcher.py) ───────────────────────────────────
+function scoreGrant(sector, stage, dpiit, grant) {
+  const sStage = grant.eligible_stages.includes(stage) ? 1.0 : 0.0;
+  const sectorMatch = grant.eligible_sectors.includes(sector);
+  const sectorAny   = grant.eligible_sectors.includes('Any');
+  const sSector = sectorMatch ? 1.0 : (sectorAny ? 0.8 : 0.0);
+  const dpiitReq = grant.min_dpiit_recognized.toLowerCase();
+  const sDpiit = dpiitReq === 'any' ? 1.0 : (dpiitReq === 'yes' && dpiit.toLowerCase() === 'yes' ? 1.0 : 0.0);
+  let sDeadline = 0.5;
+  if (grant.application_deadline.toLowerCase().startsWith('open')) {
+    sDeadline = 1.0;
+  } else {
+    try {
+      const dl = new Date(grant.application_deadline);
+      const today = new Date();
+      if (dl < today) { sDeadline = 0.0; }
+      else { const days = (dl - today) / 86400000; sDeadline = Math.min(days / 365, 1.0); }
+    } catch(_) {}
+  }
+  const maxF = 5000000;
+  const sFunding = grant.max_funding_amount_inr <= 0 ? 0.1 : Math.log1p(grant.max_funding_amount_inr) / Math.log1p(maxF);
+  const total = sStage*0.35 + sSector*0.35 + sDpiit*0.15 + sDeadline*0.10 + sFunding*0.05;
+  return {
+    total: Math.round(total * 10000) / 10000,
+    breakdown: {
+      stage:   Math.round(sStage*0.35*10000)/10000,
+      sector:  Math.round(sSector*0.35*10000)/10000,
+      dpiit:   Math.round(sDpiit*0.15*10000)/10000,
+      deadline:Math.round(sDeadline*0.10*10000)/10000,
+      funding: Math.round(sFunding*0.05*10000)/10000
+    }
+  };
+}
+
+function matchGrants(sector, stage, dpiit, minScore, maxResults) {
+  return GRANTS
+    .map(g => {
+      const sc = scoreGrant(sector, stage, dpiit, g);
+      return sc.total >= minScore ? {...g, match_score: sc.total, score_breakdown: sc.breakdown} : null;
+    })
+    .filter(Boolean)
+    .sort((a,b) => b.match_score - a.match_score)
+    .slice(0, maxResults);
+}
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
-async function loadDashboard() {
-  try {
-    const r = await fetch(API + '/api/statistics');
-    const d = await r.json();
-    document.getElementById('stat-grants').textContent = d.total_grants;
-    document.getElementById('stat-startups').textContent = d.total_startups;
-    document.getElementById('stat-funding').textContent = (d.total_max_funding_inr / 10000000).toFixed(1);
-    document.getElementById('stat-bodies').textContent = d.offering_bodies.length;
+function initDashboard() {
+  const sectors = [...new Set(GRANTS.flatMap(g => g.eligible_sectors).filter(s => s !== 'Any'))].sort();
+  const st = document.getElementById('dash-sectors');
+  sectors.forEach(s => { const t = document.createElement('span'); t.className='tag blue'; t.textContent=s; st.appendChild(t); });
 
-    // Sector tags
-    const st = document.getElementById('dash-sectors');
-    d.sectors_covered.forEach(s => {
-      const t = document.createElement('span');
-      t.className = 'tag blue';
-      t.textContent = s;
-      st.appendChild(t);
-    });
-
-    // Sector bar chart
-    const barsEl = document.getElementById('dash-sector-bars');
-    const max = Math.max(...Object.values(d.top_sectors));
-    Object.entries(d.top_sectors).forEach(([k, v]) => {
-      const pct = Math.round(v / max * 100);
-      barsEl.innerHTML += `
-        <div style="margin-bottom:6px;">
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:#525252;">
-            <span>${k}</span><span>${v}</span>
-          </div>
-          <div class="score-bar-bg"><div class="score-bar-fill teal" style="width:${pct}%"></div></div>
-        </div>`;
-    });
-  } catch(e) {
-    console.error('Dashboard load error', e);
-  }
+  const counts = {};
+  STARTUPS.forEach(s => { counts[s.sector] = (counts[s.sector]||0)+1; });
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const maxV = sorted[0][1];
+  const barsEl = document.getElementById('dash-sector-bars');
+  sorted.forEach(([k,v]) => {
+    const pct = Math.round(v/maxV*100);
+    barsEl.innerHTML += `<div style="margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:11px;color:#525252;"><span>${k}</span><span>${v}</span></div><div class="score-bar-bg"><div class="score-bar-fill teal" style="width:${pct}%"></div></div></div>`;
+  });
 }
 
 // ── Quick Match ───────────────────────────────────────────────────────────────
-async function quickMatch() {
-  const sid = document.getElementById('quick-sid').value.trim();
+function quickMatch() {
+  const sid = document.getElementById('quick-sid').value.trim().toUpperCase();
   if (!sid) { alert('Enter a Startup ID'); return; }
+  const startup = STARTUPS.find(s => s.startup_id === sid);
   const el = document.getElementById('quick-result');
-  el.innerHTML = '<div class="alert alert-info">⏳ Matching…</div>';
-  try {
-    const r = await fetch(API + '/api/match', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({startup_id: sid.toUpperCase(), max_results: 5})
-    });
-    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
-    const d = await r.json();
-    if (!d.matches.length) { el.innerHTML = '<div class="alert alert-info">No matches found above threshold.</div>'; return; }
-    el.innerHTML = `<div style="font-size:12px;color:#888;margin-bottom:8px;">Top ${d.matches.length} matches for <strong>${sid.toUpperCase()}</strong> (${d.sector} · ${d.stage})</div>`;
-    d.matches.slice(0,3).forEach(m => {
-      el.innerHTML += `<div class="match-card" style="margin-bottom:8px;">
-        <div class="match-header">
-          <div>
-            <div class="match-name">${m.grant_name}</div>
-            <div class="match-body">${m.offering_body}</div>
-          </div>
-          <span class="score-badge ${scoreClass(m.match_score)}">${(m.match_score*100).toFixed(0)}% match</span>
-        </div>
-        <div class="tag-row">
-          <span class="tag blue">${fmt(m.max_funding_amount_inr)}</span>
-          <span class="tag">Deadline: ${m.application_deadline}</span>
-        </div>
-      </div>`;
-    });
-  } catch(e) {
-    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
-  }
+  if (!startup) { el.innerHTML = `<div class="alert alert-error">Startup "${sid}" not found. Try ST001–ST080.</div>`; return; }
+  const matches = matchGrants(startup.sector, startup.stage, startup.dpiit_recognized, 0.3, 5);
+  if (!matches.length) { el.innerHTML = '<div class="alert alert-info">No matches above threshold.</div>'; return; }
+  el.innerHTML = `<div style="font-size:12px;color:#888;margin-bottom:8px;">Top ${Math.min(3,matches.length)} matches for <strong>${sid}</strong> (${startup.sector} · ${startup.stage})</div>`;
+  matches.slice(0,3).forEach(m => {
+    el.innerHTML += `<div class="match-card" style="margin-bottom:8px;"><div class="match-header"><div><div class="match-name">${m.grant_name}</div><div class="match-body">${m.offering_body}</div></div><span class="score-badge ${scoreClass(m.match_score)}">${(m.match_score*100).toFixed(0)}% match</span></div><div class="tag-row"><span class="tag blue">${fmt(m.max_funding_amount_inr)}</span><span class="tag">\uD83D\uDCC5 ${m.application_deadline}</span></div><div class="match-actions"><button class="btn btn-purple btn-sm" onclick="prefillProposal('${sid}','${m.grant_id}')">✍️ Proposal</button><button class="btn btn-teal btn-sm" onclick="prefillEligibility('${sid}','${m.grant_id}')">✅ Eligibility</button></div></div>`;
+  });
 }
 
 // ── Full Match ────────────────────────────────────────────────────────────────
-async function doMatch() {
-  const sid = document.getElementById('m-sid').value.trim();
-  const sector = document.getElementById('m-sector').value;
-  const stage = document.getElementById('m-stage').value;
-  const dpiit = document.getElementById('m-dpiit').value;
+function doMatch() {
+  const sid      = document.getElementById('m-sid').value.trim().toUpperCase();
+  let sector     = document.getElementById('m-sector').value;
+  let stage      = document.getElementById('m-stage').value;
+  let dpiit      = document.getElementById('m-dpiit').value;
   const minScore = parseFloat(document.getElementById('m-minscore').value) || 0.3;
-  const maxR = parseInt(document.getElementById('m-maxresults').value) || 10;
+  const maxR     = parseInt(document.getElementById('m-maxresults').value) || 10;
+  const el       = document.getElementById('match-results');
 
-  const body = { min_score: minScore, max_results: maxR };
-  if (sid) body.startup_id = sid.toUpperCase();
-  else {
-    if (!sector || !stage || !dpiit) { alert('Fill Startup ID or all manual fields.'); return; }
-    body.sector = sector; body.stage = stage; body.dpiit_recognized = dpiit;
+  if (sid) {
+    const s = STARTUPS.find(x => x.startup_id === sid);
+    if (!s) { el.innerHTML = `<div class="alert alert-error">Startup "${sid}" not found.</div>`; return; }
+    sector = sector || s.sector; stage = stage || s.stage; dpiit = dpiit || s.dpiit_recognized;
   }
+  if (!sector || !stage || !dpiit) { el.innerHTML = '<div class="alert alert-error">Fill Startup ID or all three manual fields.</div>'; return; }
 
-  const el = document.getElementById('match-results');
-  el.innerHTML = '<div class="alert alert-info">⏳ Scoring grants…</div>';
+  const matches = matchGrants(sector, stage, dpiit, minScore, maxR);
+  if (!matches.length) { el.innerHTML = '<div class="alert alert-info">No grants matched. Try lowering Min Score.</div>'; return; }
 
-  try {
-    const r = await fetch(API + '/api/match', {
-      method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body)
-    });
-    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
-    const d = await r.json();
-
-    if (!d.matches.length) {
-      el.innerHTML = '<div class="alert alert-info">No grants matched above the threshold. Try lowering Min Score.</div>';
-      return;
-    }
-
-    el.innerHTML = `<div class="alert alert-success">✅ Found <strong>${d.total_matches}</strong> matching grants for <strong>${d.sector} · ${d.stage}</strong></div>`;
-    const list = document.createElement('div');
-    list.className = 'match-list';
-
-    d.matches.forEach(m => {
-      const bd = m.score_breakdown;
-      const signals = [
-        {label:'Stage', val: bd.stage / 0.35, color:''},
-        {label:'Sector', val: bd.sector / 0.35, color:'teal'},
-        {label:'DPIIT', val: bd.dpiit / 0.15, color:'purple'},
-        {label:'Deadline', val: bd.deadline / 0.10, color:'green'},
-        {label:'Funding', val: bd.funding / 0.05, color:'yellow'},
-      ];
-      const barsHtml = signals.map(s =>
-        `<div class="score-bar-label"><span>${s.label}</span><span>${(s.val*100).toFixed(0)}%</span></div>
-         <div class="score-bar-bg"><div class="score-bar-fill ${s.color}" style="width:${Math.min(s.val*100,100)}%"></div></div>`
-      ).join('');
-
-      const stagesHtml = m.eligible_stages.map(s => `<span class="tag">${s}</span>`).join('');
-      const sectorsHtml = m.eligible_sectors.map(s => `<span class="tag teal">${s}</span>`).join('');
-
-      list.innerHTML += `
-        <div class="match-card">
-          <div class="match-header">
-            <div>
-              <div class="match-name">${m.grant_name}</div>
-              <div class="match-body">${m.offering_body}</div>
-            </div>
-            <span class="score-badge ${scoreClass(m.match_score)}">${(m.match_score*100).toFixed(1)}% match</span>
-          </div>
-          <div class="tag-row">
-            <span class="funding-amount">${fmt(m.max_funding_amount_inr)}</span>
-            <span class="deadline-text">📅 ${m.application_deadline}</span>
-          </div>
-          <div class="tag-row">${stagesHtml}</div>
-          <div class="tag-row">${sectorsHtml}</div>
-          <div class="score-bar-wrap" style="margin-top:8px;">${barsHtml}</div>
-          <details style="margin-top:8px;font-size:12px;">
-            <summary style="cursor:pointer;color:#0f62fe;font-weight:600;">📋 Requirements</summary>
-            <p style="margin-top:6px;color:#525252;line-height:1.6;">${m.key_requirements}</p>
-          </details>
-          <div class="match-actions">
-            <button class="btn btn-purple btn-sm" onclick="prefillProposal('${d.startup_id||''}','${m.grant_id}')">✍️ Generate Proposal</button>
-            <button class="btn btn-teal btn-sm" onclick="prefillEligibility('${d.startup_id||''}','${m.grant_id}')">✅ Check Eligibility</button>
-          </div>
-        </div>`;
-    });
-    el.appendChild(list);
-  } catch(e) {
-    el.innerHTML = `<div class="alert alert-error">Error: ${e.message}</div>`;
-  }
+  el.innerHTML = `<div class="alert alert-success">✅ Found <strong>${matches.length}</strong> matching grants for <strong>${sector} · ${stage}</strong></div>`;
+  const list = document.createElement('div'); list.className='match-list';
+  matches.forEach(m => {
+    const bd = m.score_breakdown;
+    const signals = [
+      {label:'Stage',   val: bd.stage/0.35,   color:''},
+      {label:'Sector',  val: bd.sector/0.35,  color:'teal'},
+      {label:'DPIIT',   val: bd.dpiit/0.15,   color:'purple'},
+      {label:'Deadline',val: bd.deadline/0.10,color:'green'},
+      {label:'Funding', val: bd.funding/0.05, color:'yellow'}
+    ];
+    const barsHtml = signals.map(s =>
+      `<div class="score-bar-label"><span>${s.label}</span><span>${(Math.min(s.val,1)*100).toFixed(0)}%</span></div><div class="score-bar-bg"><div class="score-bar-fill ${s.color}" style="width:${Math.min(s.val*100,100)}%"></div></div>`
+    ).join('');
+    list.innerHTML += `<div class="match-card"><div class="match-header"><div><div class="match-name">${m.grant_name}</div><div class="match-body">${m.offering_body}</div></div><span class="score-badge ${scoreClass(m.match_score)}">${(m.match_score*100).toFixed(1)}% match</span></div><div class="tag-row"><span class="funding-amount">${fmt(m.max_funding_amount_inr)}</span><span class="deadline-text">\uD83D\uDCC5 ${m.application_deadline}</span></div><div class="tag-row">${m.eligible_stages.map(s=>`<span class="tag">${s}</span>`).join('')}</div><div class="tag-row">${m.eligible_sectors.map(s=>`<span class="tag teal">${s}</span>`).join('')}</div><div class="score-bar-wrap" style="margin-top:8px;">${barsHtml}</div><details style="margin-top:8px;font-size:12px;"><summary style="cursor:pointer;color:#0f62fe;font-weight:600;">📋 Requirements</summary><p style="margin-top:6px;color:#525252;line-height:1.6;">${m.key_requirements}</p></details><div class="match-actions"><button class="btn btn-purple btn-sm" onclick="prefillProposal('${sid||''}','${m.grant_id}')">✍️ Proposal</button><button class="btn btn-teal btn-sm" onclick="prefillEligibility('${sid||''}','${m.grant_id}')">✅ Eligibility</button></div></div>`;
+  });
+  el.appendChild(list);
 }
 
 // ── Startups ──────────────────────────────────────────────────────────────────
-let _allStartups = [];
-async function loadStartups() {
-  window._startupsLoaded = true;
-  const r = await fetch(API + '/api/startups');
-  _allStartups = await r.json();
-  renderStartups(_allStartups);
-}
-function filterStartups() {
-  const sec = document.getElementById('f-sector').value.toLowerCase();
-  const stg = document.getElementById('f-stage').value.toLowerCase();
-  const dp = document.getElementById('f-dpiit').value.toLowerCase();
-  const q = document.getElementById('f-search').value.toLowerCase();
-  const filtered = _allStartups.filter(s =>
-    (!sec || s.sector.toLowerCase() === sec) &&
-    (!stg || s.stage.toLowerCase() === stg) &&
-    (!dp || s.dpiit_recognized.toLowerCase() === dp) &&
-    (!q || s.company_name.toLowerCase().includes(q) || s.startup_id.toLowerCase().includes(q))
-  );
-  renderStartups(filtered);
-}
 function renderStartups(list) {
-  document.getElementById('startup-count').textContent = `Showing ${list.length} startups`;
-  const grid = document.getElementById('startup-grid');
-  grid.innerHTML = list.map(s => `
-    <div class="startup-card" onclick="prefillProposal('${s.startup_id}',''); showNavPage('proposal');">
+  document.getElementById('startup-count').textContent = `Showing ${list.length} of ${STARTUPS.length} startups`;
+  document.getElementById('startup-grid').innerHTML = list.map(s => `
+    <div class="startup-card" onclick="prefillProposal('${s.startup_id}',''); showNavTo('proposal');">
       <div class="startup-card-name">${s.startup_id} · ${s.company_name}</div>
       <div class="startup-card-meta">
         <span class="tag blue">${s.sector}</span>
@@ -861,17 +590,25 @@ function renderStartups(list) {
         <span style="color:#888;">${s.city}, ${s.state}</span>
       </div>
       <div style="font-size:11px;color:#525252;margin-top:6px;line-height:1.5;">${s.tech_focus.length>80?s.tech_focus.slice(0,80)+'…':s.tech_focus}</div>
-      <div style="font-size:11px;color:#009d9a;margin-top:4px;">Revenue: ₹${Number(s.annual_revenue_inr).toLocaleString('en-IN')}</div>
+      <div style="font-size:11px;color:#009d9a;margin-top:4px;">Revenue: \u20b9${s.annual_revenue_inr.toLocaleString('en-IN')}</div>
     </div>`).join('');
 }
+function filterStartups() {
+  const sec = document.getElementById('f-sector').value.toLowerCase();
+  const stg = document.getElementById('f-stage').value.toLowerCase();
+  const dp  = document.getElementById('f-dpiit').value.toLowerCase();
+  const q   = document.getElementById('f-search').value.toLowerCase();
+  renderStartups(STARTUPS.filter(s =>
+    (!sec || s.sector.toLowerCase()===sec) &&
+    (!stg || s.stage.toLowerCase()===stg) &&
+    (!dp  || s.dpiit_recognized.toLowerCase()===dp) &&
+    (!q   || s.company_name.toLowerCase().includes(q) || s.startup_id.toLowerCase().includes(q))
+  ));
+}
 
-// ── Grants ─────────────────────────────────────────────────────────────────────
-async function loadGrants() {
-  window._grantsLoaded = true;
-  const r = await fetch(API + '/api/grants');
-  const grants = await r.json();
-  const grid = document.getElementById('grant-grid');
-  grid.innerHTML = grants.map(g => `
+// ── Grants ────────────────────────────────────────────────────────────────────
+function renderGrants() {
+  document.getElementById('grant-grid').innerHTML = GRANTS.map(g => `
     <div class="grant-card">
       <div class="grant-card-name">${g.grant_id} · ${g.grant_name}</div>
       <div class="grant-card-body">${g.offering_body}</div>
@@ -879,111 +616,159 @@ async function loadGrants() {
         <span class="tag blue">${fmt(g.max_funding_amount_inr)}</span>
         ${g.eligible_stages.map(s=>`<span class="tag">${s}</span>`).join('')}
       </div>
-      <div class="tag-row" style="margin-bottom:8px;">
-        ${g.eligible_sectors.map(s=>`<span class="tag teal">${s}</span>`).join('')}
-      </div>
-      <div class="grant-card-meta">📅 ${g.application_deadline} &nbsp;|&nbsp; DPIIT: ${g.min_dpiit_recognized}</div>
+      <div class="tag-row" style="margin-bottom:8px;">${g.eligible_sectors.map(s=>`<span class="tag teal">${s}</span>`).join('')}</div>
+      <div class="grant-card-meta">\uD83D\uDCC5 ${g.application_deadline} &nbsp;|&nbsp; DPIIT: ${g.min_dpiit_recognized}</div>
       <div style="font-size:11px;color:#525252;margin-top:6px;line-height:1.5;">${g.key_requirements}</div>
-      <div class="match-actions" style="margin-top:10px;">
-        <button class="btn btn-purple btn-sm" onclick="prefillProposal('',this.closest('.grant-card').querySelector('.grant-card-name').textContent.split('·')[0].trim()); showNavPage('proposal');">✍️ Draft Proposal</button>
-        <button class="btn btn-secondary btn-sm" onclick="loadGrantSummary('${g.grant_id}', this)">📖 AI Summary</button>
-      </div>
-      <div class="grant-summary-${g.grant_id}" style="display:none;margin-top:8px;"></div>
     </div>`).join('');
 }
 
-async function loadGrantSummary(gid, btn) {
-  btn.textContent = '⏳ Summarising…';
-  btn.disabled = true;
-  try {
-    const r = await fetch(API + `/api/grants/${gid}/summary`);
-    const d = await r.json();
-    const el = document.querySelector(`.grant-summary-${gid}`);
-    el.style.display = 'block';
-    el.innerHTML = `<div class="ai-label">IBM Granite Summary</div><div class="ai-output" style="min-height:auto;">${d.summary}</div>`;
-    btn.style.display = 'none';
-  } catch(e) {
-    btn.textContent = '📖 AI Summary';
-    btn.disabled = false;
-  }
-}
-
-// ── AI Proposal ───────────────────────────────────────────────────────────────
+// ── AI Proposal (template-based, no API needed) ───────────────────────────────
 function prefillProposal(sid, gid) {
   if (sid) document.getElementById('p-sid').value = sid;
   if (gid) document.getElementById('p-gid').value = gid;
 }
-async function generateProposal() {
+function generateProposal() {
   const sid = document.getElementById('p-sid').value.trim().toUpperCase();
   const gid = document.getElementById('p-gid').value.trim().toUpperCase();
   if (!sid || !gid) { alert('Enter both Startup ID and Grant ID'); return; }
+  const startup = STARTUPS.find(s => s.startup_id === sid);
+  const grant   = GRANTS.find(g => g.grant_id === gid);
+  if (!startup) { alert(`Startup "${sid}" not found`); return; }
+  if (!grant)   { alert(`Grant "${gid}" not found`); return; }
 
   const outEl = document.getElementById('proposal-output');
   const textEl = document.getElementById('proposal-text');
   outEl.style.display = 'block';
-  showSpinner('prop-spinner');
-  textEl.textContent = 'Generating with IBM Granite…';
+  document.getElementById('prop-spinner').style.display = 'inline-block';
+  textEl.textContent = 'Generating draft…';
 
-  try {
-    const r = await fetch(API + '/api/proposal', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({startup_id: sid, grant_id: gid})
-    });
-    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
-    const d = await r.json();
-    textEl.textContent = d.proposal_text;
+  setTimeout(() => {
+    document.getElementById('prop-spinner').style.display = 'none';
+    textEl.textContent = buildProposal(startup, grant);
     document.getElementById('proposal-startup-info').textContent =
-      `${d.company_name} → ${d.grant_name} | Model: ${d.model_used}`;
-  } catch(e) {
-    textEl.textContent = 'Error: ' + e.message;
-  } finally {
-    hideSpinner('prop-spinner');
-  }
+      `${startup.company_name}  →  ${grant.grant_name}  |  Model: IBM Granite (template mode — run python main.py for live generation)`;
+  }, 800);
+}
+function buildProposal(s, g) {
+  return `**Draft Grant Application — ${g.grant_name}**
+Submitted to: ${g.offering_body}
+Date: ${new Date().toLocaleDateString('en-IN')}
+
+─────────────────────────────────────────────────
+
+**1. About the Applicant**
+
+${s.company_name} is a ${s.stage}-stage startup headquartered in ${s.city}, ${s.state}. We are ${s.dpiit_recognized === 'Yes' ? 'DPIIT recognised' : 'a registered entity working towards DPIIT recognition'}.
+
+Our core technology: ${s.tech_focus}
+
+Annual Revenue: ₹${s.annual_revenue_inr.toLocaleString('en-IN')}
+
+**2. Problem Statement**
+
+India's ${s.sector} sector faces systemic challenges that our solution directly addresses. Despite significant market demand, existing solutions are inadequate due to lack of innovation, affordability, or accessibility at scale.
+
+**3. Our Solution & Alignment with ${g.offering_body}**
+
+Our product directly aligns with the thematic goals of the ${g.grant_name}. The solution is innovative, verifiable, and ready for milestone-based funding deployment.
+
+We specifically match the grant's eligibility criteria:
+✔ Stage: ${s.stage} (grant supports: ${g.eligible_stages.join(', ')})
+✔ Sector: ${s.sector} (grant covers: ${g.eligible_sectors.join(', ')})
+✔ DPIIT Status: ${s.dpiit_recognized}
+
+**4. Requested Grant Amount**
+
+We request the maximum available funding of ${fmt(g.max_funding_amount_inr)} under the ${g.grant_name}.
+
+**5. Proposed Milestones**
+
+Month 1–3  : Complete product hardening and beta release to 500 users
+Month 4–9  : Achieve ₹${Math.round(g.max_funding_amount_inr * 0.15).toLocaleString('en-IN')} in revenue; hire 3 key tech roles
+Month 10–18: Scale to 5,000 users; prepare for next funding round
+
+**6. Impact**
+
+Our solution directly impacts: ${s.sector} ecosystem in India. Measurable outcomes include user adoption metrics, revenue milestones, and documented innovation delivery against grant requirements.
+
+**7. Declaration**
+
+We confirm all information is accurate. We agree to submit milestone reports as required by ${g.offering_body}.
+
+Respectfully,
+${s.company_name} Team
+${s.city}, ${s.state}
+
+─────────────────────────────────────────────────
+[NOTE: This is a template draft generated in standalone mode. For IBM Granite-powered proposals, run: python main.py and access http://localhost:8000]`;
 }
 
-// ── Eligibility ───────────────────────────────────────────────────────────────
+// ── Eligibility (template-based) ──────────────────────────────────────────────
 function prefillEligibility(sid, gid) {
   document.getElementById('e-sid').value = sid;
   document.getElementById('e-gid').value = gid;
-  showNavPage('eligibility');
+  showNavTo('eligibility');
 }
-function showNavPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  const navItems = document.querySelectorAll('.nav-item');
-  navItems.forEach(n => {
-    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes(id)) n.classList.add('active');
-  });
-}
-async function checkEligibility() {
+function checkEligibility() {
   const sid = document.getElementById('e-sid').value.trim().toUpperCase();
   const gid = document.getElementById('e-gid').value.trim().toUpperCase();
   if (!sid || !gid) { alert('Enter both Startup ID and Grant ID'); return; }
+  const startup = STARTUPS.find(s => s.startup_id === sid);
+  const grant   = GRANTS.find(g => g.grant_id === gid);
+  if (!startup) { alert(`Startup "${sid}" not found`); return; }
+  if (!grant)   { alert(`Grant "${gid}" not found`); return; }
 
+  const sc = scoreGrant(startup.sector, startup.stage, startup.dpiit_recognized, grant);
   const outEl = document.getElementById('elig-output');
-  const textEl = document.getElementById('elig-text');
   outEl.style.display = 'block';
-  showSpinner('elig-spinner');
-  textEl.textContent = 'Analysing with IBM Granite…';
+  document.getElementById('elig-text').textContent = buildEligibility(startup, grant, sc);
+}
+function buildEligibility(s, g, sc) {
+  const stageOk  = g.eligible_stages.includes(s.stage);
+  const sectorOk = g.eligible_sectors.includes(s.sector) || g.eligible_sectors.includes('Any');
+  const dpiitOk  = g.min_dpiit_recognized.toLowerCase() === 'any' || s.dpiit_recognized.toLowerCase() === 'yes';
 
-  try {
-    const r = await fetch(API + '/api/eligibility', {
-      method: 'POST', headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({startup_id: sid, grant_id: gid})
-    });
-    if (!r.ok) { const e = await r.json(); throw new Error(e.detail); }
-    const d = await r.json();
-    textEl.textContent = d.analysis;
-  } catch(e) {
-    textEl.textContent = 'Error: ' + e.message;
-  } finally {
-    hideSpinner('elig-spinner');
-  }
+  const flags = [];
+  if (!stageOk)  flags.push(`✗ Stage mismatch: "${s.stage}" is not in [${g.eligible_stages.join(', ')}].`);
+  if (!sectorOk) flags.push(`✗ Sector mismatch: "${s.sector}" is not in [${g.eligible_sectors.join(', ')}].`);
+  if (!dpiitOk)  flags.push(`✗ DPIIT required: This grant requires DPIIT recognition. Current status: ${s.dpiit_recognized}.`);
+
+  const overall = sc.total >= 0.65 ? '🟢 HIGHLY ELIGIBLE' : sc.total >= 0.4 ? '🟡 PARTIALLY ELIGIBLE' : '🔴 LOW ELIGIBILITY';
+
+  return `Eligibility Analysis — ${s.startup_id} vs ${g.grant_id}
+${'─'.repeat(50)}
+Startup  : ${s.company_name}
+Grant    : ${g.grant_name} (${g.offering_body})
+Score    : ${(sc.total*100).toFixed(1)}%  →  ${overall}
+
+Signal Breakdown:
+  Stage    ${(sc.breakdown.stage*100/0.35).toFixed(0)}%  (weight 35%)
+  Sector   ${(sc.breakdown.sector*100/0.35).toFixed(0)}%  (weight 35%)
+  DPIIT    ${(sc.breakdown.dpiit*100/0.15).toFixed(0)}%  (weight 15%)
+  Deadline ${(sc.breakdown.deadline*100/0.10).toFixed(0)}%  (weight 10%)
+  Funding  ${(sc.breakdown.funding*100/0.05).toFixed(0)}%  (weight  5%)
+
+${flags.length === 0 ? '✅ This startup meets all eligibility criteria for this grant.\n\nRECOMMENDATION: Proceed with application. Ensure milestone documentation is prepared and innovation proof-points are clearly articulated. Submit before: ' + g.application_deadline : 'ISSUES FOUND:\n' + flags.join('\n') + '\n\nRECOMMENDATION: Address the above gaps before applying. ' + (flags.length > 1 ? 'Multiple criteria are unmet.' : 'One criteria is unmet — review carefully.')}
+
+Key Requirements: ${g.key_requirements}
+Deadline: ${g.application_deadline}
+
+─────────────────────────────────────────────────
+[For IBM Granite-powered analysis, run: python main.py → http://localhost:8000]`;
+}
+
+// ── Nav helper ────────────────────────────────────────────────────────────────
+function showNavTo(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+  });
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-loadDashboard();
+initDashboard();
 </script>
 </body>
 </html>
